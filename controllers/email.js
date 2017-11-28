@@ -2,12 +2,13 @@ var exports = module.exports = {}
 var fs = require('fs');
 var google = require('googleapis');
 var googleAuth = require('google-auth-library');
-var opn = require('opn');
 
 var SCOPES = [
     'https://mail.google.com/',
     'https://www.googleapis.com/auth/gmail.modify',
     'https://www.googleapis.com/auth/gmail.readonly',
+    'https://www.googleapis.com/auth/gmail.compose',
+    'https://www.googleapis.com/auth/gmail.send'
     // 'https://www.googleapis.com/auth/gmail.metadata'
 ];
 var auth = new googleAuth();
@@ -35,10 +36,8 @@ fs.readFile('client_secret.json', (err, content) => {
 
 
 exports.loginPage = (req, res, next) => {
-    if (authUrl) {
-        opn(authUrl);
-        res.send('redirect to google credentails successfully!');
-    }
+    if (authUrl)
+        res.redirect(authUrl);
     else
         res
             .status(401)
@@ -69,9 +68,9 @@ exports.getMessageList = (req, res, next) => {
     auth.credentials = dencryptToken(req.cookies.token);
     gmail.users.messages.list({
         userId: 'me',
-        labelIds: 'INBOX',
-        pageToken: req.params.pageToken || '',
-        q: req.params.query || '',
+        labelIds: req.body.labelId || 'INBOX',
+        pageToken: req.body.pageToken || '',
+        q: req.body.query || '',
         maxResults: 10,
         auth: auth,
     }, (err, result) => {
@@ -113,6 +112,38 @@ exports.getMessageList = (req, res, next) => {
     });
 }
 
+exports.sendMail = (req, res, next) => {
+    let auth = oauth2Client;
+    auth.credentials = dencryptToken(req.cookies.token);
+    gmail.users.messages.send({
+        userId: 'me',
+        auth: auth,
+        resource: {
+            raw: makeEmailBody(req.body.receiverEmail, req.body.senderEmail, req.body.mailSubject, req.body.mailBody)
+        }
+    }, (err, response) => {
+        if (err) {
+            res.
+                status(err.code || 520)
+                .json({
+                    message: 'Error while sending mail...',
+                    err: err
+                });
+        }
+        res.json({
+            message: 'Email send successfully!',
+            data: response
+        });
+    });
+}
+
+exports.logout = (req, res, next) => {
+    res.clearCookie("token");
+    res.json({
+        message: 'Logout successfully!'
+    })
+}
+
 function getMessageDetail(messageID, auth) {
     return new Promise((resolve, reject) => {
         gmail.users.messages.get({
@@ -132,6 +163,19 @@ function getMessageDetail(messageID, auth) {
             resolve(message);
         });
     });
+}
+
+function makeEmailBody(receiverEmail, senderEmail, mailSubject, mailBody) { 
+    let mailString = ["Content-Type: text/plain; charset=\"UTF-8\"\n",
+        "MIME-Version: 1.0\n",
+        "Content-Transfer-Encoding: 7bit\n",
+        "to: ", receiverEmail, "\n",
+        "from: ", senderEmail, "\n",
+        "subject: ", mailSubject, "\n\n",
+        mailBody
+    ].join('');
+
+    return new Buffer(mailString).toString("base64").replace(/\+/g, '-').replace(/\//g, '_');
 }
 
 function encryptToken(token) {
