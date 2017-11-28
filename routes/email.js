@@ -8,6 +8,8 @@ router.get('/', function (req, res, next) {
 
 router.get('/login', emailController.loginPage);
 router.get('/googleApi', emailController.getToken);
-router.post('/getList', emailController.getMessageList);
+router.post('/get', emailController.getMessageList);
+router.post('/send', emailController.sendMail);
+router.post('/logout', emailController.logout);
 
 module.exports = router;
