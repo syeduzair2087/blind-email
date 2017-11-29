@@ -10,6 +10,6 @@ router.get('/login', emailController.loginPage);
 router.get('/googleApi', emailController.getToken);
 router.post('/get', emailController.getMessageList);
 router.post('/send', emailController.sendMail);
-router.post('/logout', emailController.logout);
+router.get('/logout', emailController.logout);
 
 module.exports = router;

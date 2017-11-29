@@ -36,8 +36,8 @@ fs.readFile('client_secret.json', (err, content) => {
 
 
 exports.loginPage = (req, res, next) => {
-    if (authUrl)
-        res.redirect(authUrl);
+    if (authUrl) 
+        res.json({url:authUrl});
     else
         res
             .status(401)
@@ -57,9 +57,10 @@ exports.getToken = (req, res, next) => {
         }
 
         res.cookie('token', encryptToken(token));
-        res.json({
-            message: 'User authorized successfully!'
-        });
+        res.redirect('/home');
+        // res.json({
+        //     message: 'User authorized successfully!'
+        // });
     });
 }
 
@@ -165,7 +166,7 @@ function getMessageDetail(messageID, auth) {
     });
 }
 
-function makeEmailBody(receiverEmail, senderEmail, mailSubject, mailBody) { 
+function makeEmailBody(receiverEmail, senderEmail, mailSubject, mailBody) {
     let mailString = ["Content-Type: text/plain; charset=\"UTF-8\"\n",
         "MIME-Version: 1.0\n",
         "Content-Transfer-Encoding: 7bit\n",

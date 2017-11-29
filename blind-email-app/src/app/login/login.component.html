@@ -1,0 +1,9 @@
+<app-loading *ngIf="loading"></app-loading>
+<div *ngIf="!loading">
+  <div class="row text-center">
+    <img src="./assets/blind-email-logo.png" alt="" style="margin:272px 0px 72px 0px" class="animated fadeInDown">
+  </div>
+  <div class="row text-center">
+    <button class="btn btn-primary btn-lg animated fadeInUp" (click)="clickLogin()">Get Started</button>
+  </div>
+</div>
