@@ -26,8 +26,10 @@ export class VoiceService {
     let voiceInterval = setInterval(() => {
       let voices = window.speechSynthesis.getVoices();
       if (voices.length) {
-        if (onload)
+        if (onload) {
+          console.log('fn onload', onload);
           onload();
+        }
 
         clearInterval(voiceInterval);
 
@@ -35,14 +37,13 @@ export class VoiceService {
 
         voice == 'male' ? msg.voice = voices[50] : msg.voice = voices[49];
 
-        console.log('fn onend', onend);
 
         if (onend) {
-          console.log('onend funciton found');
+          console.log('fn onend', onend);
           msg.onend = onend;
         }
 
-        console.log(msg.onend);
+        // console.log(msg.onend);
         window.speechSynthesis.speak(msg);
       }
     }, 250)

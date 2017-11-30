@@ -15,10 +15,11 @@ export class ShellComponent implements OnInit {
       .then((result: string) => {
         console.log(result);
         if (this.voiceService.keywordMatch(result, 'logout')) {
-          this.voiceService.speak('Logging out', 'female');
-          this.authService.logout().subscribe(response => {
-            console.log(response);
-            // this.router.navigate(['login']);
+          this.voiceService.speak('Logging out', 'female', null, () => {
+            this.authService.logout().subscribe(response => {
+              console.log(response);
+              this.router.navigate(['login']);
+            });
           });
         } else if (this.voiceService.keywordMatch(result, 'repeat')) {
           this.playMenu();

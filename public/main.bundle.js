@@ -482,7 +482,7 @@ var AuthService = (function () {
     return AuthService;
 }());
 AuthService = __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["v" /* Injectable */])(),
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["w" /* Injectable */])(),
     __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */]) === "function" && _a || Object])
 ], AuthService);
 
@@ -529,17 +529,19 @@ var VoiceService = (function () {
         var voiceInterval = setInterval(function () {
             var voices = window.speechSynthesis.getVoices();
             if (voices.length) {
-                if (onload)
+                if (onload) {
+                    console.log('fn onload', onload);
                     onload();
+                }
                 clearInterval(voiceInterval);
                 var msg = new SpeechSynthesisUtterance(text);
                 voice == 'male' ? msg.voice = voices[50] : msg.voice = voices[49];
                 console.log('fn onend', onend);
                 if (onend) {
-                    console.log('onend funciton found');
+                    // console.log('onend funciton found');
                     msg.onend = onend;
                 }
-                console.log(msg.onend);
+                // console.log(msg.onend);
                 window.speechSynthesis.speak(msg);
             }
         }, 250);
@@ -574,7 +576,7 @@ var VoiceService = (function () {
     return VoiceService;
 }());
 VoiceService = __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["v" /* Injectable */])(),
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["w" /* Injectable */])(),
     __metadata("design:paramtypes", [])
 ], VoiceService);
 
@@ -606,14 +608,18 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 var LoginComponent = (function () {
-    function LoginComponent(voiceService, authService) {
+    function LoginComponent(voiceService, authService, changeDetector) {
         this.voiceService = voiceService;
         this.authService = authService;
+        this.changeDetector = changeDetector;
         this.loading = true;
     }
     LoginComponent.prototype.playIntro = function () {
         var _this = this;
-        this.voiceService.speak('Welcome to blind email system, please login to continue. Click the button, or say login after the beep', 'female', function () { return _this.loading = false; }, function () { return setTimeout(function () {
+        this.voiceService.speak('Welcome to blind email system, please login to continue. Click the button, or say login after the beep', 'female', function () {
+            _this.loading = false;
+            _this.changeDetector.detectChanges();
+        }, function () { return setTimeout(function () {
             _this.voiceInput.call(_this);
         }, 250); });
     };
@@ -634,6 +640,7 @@ var LoginComponent = (function () {
         });
     };
     LoginComponent.prototype.ngOnInit = function () {
+        console.log('Login screen');
         this.playIntro();
     };
     LoginComponent.prototype.clickLogin = function () {
@@ -649,10 +656,10 @@ LoginComponent = __decorate([
         template: __webpack_require__(187),
         styles: [__webpack_require__(177)]
     }),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2_app_services_voice_service__["a" /* VoiceService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2_app_services_voice_service__["a" /* VoiceService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_0__services_auth_service__["a" /* AuthService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__services_auth_service__["a" /* AuthService */]) === "function" && _b || Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2_app_services_voice_service__["a" /* VoiceService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2_app_services_voice_service__["a" /* VoiceService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_0__services_auth_service__["a" /* AuthService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__services_auth_service__["a" /* AuthService */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_1__angular_core__["p" /* ChangeDetectorRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_core__["p" /* ChangeDetectorRef */]) === "function" && _c || Object])
 ], LoginComponent);
 
-var _a, _b;
+var _a, _b, _c;
 //# sourceMappingURL=login.component.js.map
 
 /***/ }),
@@ -692,10 +699,11 @@ var ShellComponent = (function () {
             .then(function (result) {
             console.log(result);
             if (_this.voiceService.keywordMatch(result, 'logout')) {
-                _this.voiceService.speak('Logging out', 'female');
-                _this.authService.logout().subscribe(function (response) {
-                    console.log(response);
-                    // this.router.navigate(['login']);
+                _this.voiceService.speak('Logging out', 'female', null, function () {
+                    _this.authService.logout().subscribe(function (response) {
+                        console.log(response);
+                        _this.router.navigate(['login']);
+                    });
                 });
             }
             else if (_this.voiceService.keywordMatch(result, 'repeat')) {
@@ -723,10 +731,6 @@ var ShellComponent = (function () {
         this.playIntro();
     };
     ShellComponent.prototype.clickLogout = function () {
-        this.authService.logout().subscribe(function (response) {
-            console.log(response);
-            // this.router.navigate(['login']);
-        }, function (err) { return console.log(err); });
     };
     return ShellComponent;
 }());
