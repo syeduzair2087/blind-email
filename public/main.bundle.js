@@ -469,7 +469,7 @@ var AuthService = (function () {
         this.http = http;
     }
     AuthService.prototype.apiUrl = function (endpoint) {
-        return "http://localhost:3000/api/v1/" + endpoint;
+        return "https://blind-email.herokuapp.com/api/v1/" + endpoint;
     };
     AuthService.prototype.login = function () {
         return this.http.get(this.apiUrl('email/login'))
