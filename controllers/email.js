@@ -36,8 +36,8 @@ fs.readFile('client_secret.json', (err, content) => {
 
 
 exports.loginPage = (req, res, next) => {
-    if (authUrl) 
-        res.json({url:authUrl});
+    if (authUrl)
+        res.json({ url: authUrl });
     else
         res
             .status(401)
@@ -83,6 +83,16 @@ exports.getMessageList = (req, res, next) => {
                     message: 'Error while receiving Gmail inbox',
                     error: err.message
                 });
+            return;
+        }
+        
+        if (!result.messages) {
+            res
+                .status(500)
+                .json({
+                    message: 'Error while receiving Gmail inbox'
+                });
+            return;
         }
 
         let messagesDetail = result.messages
@@ -114,6 +124,15 @@ exports.getMessageList = (req, res, next) => {
 }
 
 exports.sendMail = (req, res, next) => {
+    if (!req.body.receiverEmail || !req.body.mailSubject || !req.body.mailBody) {
+        res.
+            status(400)
+            .json({
+                message: 'Please provide required fields...'
+            });
+        return;
+    }
+
     let auth = oauth2Client;
     auth.credentials = dencryptToken(req.cookies.token);
     gmail.users.messages.send({
@@ -139,6 +158,7 @@ exports.sendMail = (req, res, next) => {
 }
 
 exports.logout = (req, res, next) => {
+    res.cookie('token', '', { expires: new Date(0) });
     res.clearCookie("token");
     res.json({
         message: 'Logout successfully!'
