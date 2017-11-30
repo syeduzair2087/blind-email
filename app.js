@@ -9,6 +9,12 @@ var bodyParser = require('body-parser');
 var email = require('./routes/email');
 
 var app = express();
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header('Access-Control-Allow-Credentials', true);
+  next();
+})
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

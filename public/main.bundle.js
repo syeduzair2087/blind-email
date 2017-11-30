@@ -469,7 +469,7 @@ var AuthService = (function () {
         this.http = http;
     }
     AuthService.prototype.apiUrl = function (endpoint) {
-        return "http://localhost:3000/api/v1/" + endpoint;
+        return "http://127.0.0.1:3000/api/v1/" + endpoint;
     };
     AuthService.prototype.login = function () {
         return this.http.get(this.apiUrl('email/login'))
@@ -723,6 +723,10 @@ var ShellComponent = (function () {
         this.playIntro();
     };
     ShellComponent.prototype.clickLogout = function () {
+        this.authService.logout().subscribe(function (response) {
+            console.log(response);
+            // this.router.navigate(['login']);
+        }, function (err) { return console.log(err); });
     };
     return ShellComponent;
 }());
