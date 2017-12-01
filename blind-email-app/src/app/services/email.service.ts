@@ -5,7 +5,7 @@ import { Buffer } from 'buffer';
 @Injectable()
 export class EmailService {
   apiUrl(endpoint: string) {
-    return `https://www.blind-email.herokuapp.com/api/v1/${endpoint}`
+    return `https://blind-email.herokuapp.com/api/v1/${endpoint}`
   }
 
   constructor(private http: Http) { }

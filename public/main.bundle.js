@@ -107,7 +107,7 @@ var EmailService = (function () {
         this.http = http;
     }
     EmailService.prototype.apiUrl = function (endpoint) {
-        return "https://www.blind-email.herokuapp.com/api/v1/" + endpoint;
+        return "https://blind-email.herokuapp.com/api/v1/" + endpoint;
     };
     EmailService.prototype.fetchEmail = function () {
         return this.http.post(this.apiUrl('email/get'), {}, {
@@ -972,7 +972,7 @@ var AuthService = (function () {
         this.http = http;
     }
     AuthService.prototype.apiUrl = function (endpoint) {
-        return "https://www.blind-email.herokuapp.com/api/v1/" + endpoint;
+        return "https://blind-email.herokuapp.com/api/v1/" + endpoint;
     };
     AuthService.prototype.login = function () {
         return this.http.get(this.apiUrl('email/login'))
