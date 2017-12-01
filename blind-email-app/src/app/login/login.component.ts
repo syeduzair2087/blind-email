@@ -48,6 +48,7 @@ export class LoginComponent implements OnInit {
 
   clickLogin() {
     console.log('click')
+    this.voiceService.cancelVoice();
     this.authService.login()
       .subscribe(result => window.location.assign(result.url))
   }
