@@ -1,5 +1,5 @@
 import { AuthService } from './../services/auth.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { VoiceService } from 'app/services/voice.service';
 import 'rxjs/add/operator/first';
 
@@ -9,12 +9,15 @@ import 'rxjs/add/operator/first';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  loading: boolean = true;
+  loading: boolean = false;
 
   playIntro() {
     this.voiceService.speak('Welcome to blind email system, please login to continue. Click the button, or say login after the beep',
       'female',
-      () => this.loading = false,
+      () => {
+        this.loading = false
+        this.changeDetector.detectChanges();
+      },
       () => setTimeout(() => {
         this.voiceInput.call(this);
       }, 250));
@@ -36,14 +39,16 @@ export class LoginComponent implements OnInit {
       })
   }
 
-  constructor(private voiceService: VoiceService, private authService: AuthService) { }
+  constructor(private voiceService: VoiceService, private authService: AuthService, private changeDetector: ChangeDetectorRef) { }
 
   ngOnInit() {
+    console.log('Login screen')
     this.playIntro();
   }
 
   clickLogin() {
     console.log('click')
+    this.voiceService.cancelVoice();
     this.authService.login()
       .subscribe(result => window.location.assign(result.url))
   }

@@ -1,1 +1,6 @@
-<button class="btn btn-danger btn-lg" (click)="clickLogout()">Log out</button>
+<div class="home-bg row">
+    <i class="fa fa-fw fa-5x fa-volume-up animated pulse infinite" *ngIf="speaking"></i>
+    <i class="fa fa-fw fa-5x fa-volume-off" *ngIf="!speaking"></i>
+    <i class="fa fa-fw fa-5x fa-microphone animated pulse infinite" *ngIf="listening"></i>
+    <i class="fa fa-fw fa-5x fa-microphone-slash" *ngIf="!listening"></i>
+</div>

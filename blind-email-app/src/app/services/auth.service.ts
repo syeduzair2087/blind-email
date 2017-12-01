@@ -6,7 +6,7 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class AuthService {
   apiUrl(endpoint: string) {
-    return `https://blind-email.herokuapp.com/api/v1/${endpoint}`
+    return `http://127.0.0.1:3000/api/v1/${endpoint}`
   }
 
   constructor(private http: Http) { }

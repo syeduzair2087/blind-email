@@ -7,6 +7,8 @@ import { HttpModule } from '@angular/http';
 import { AppComponent } from './app.component';
 import { LoginModule } from 'app/login/login.module';
 import { ShellModule } from 'app/shell/shell.module';
+import { LoginGuard, HomeGuard } from 'app/services/guard.service';
+import { CookieModule } from 'ngx-cookie';
 
 @NgModule({
   declarations: [
@@ -18,9 +20,10 @@ import { ShellModule } from 'app/shell/shell.module';
     HttpModule,
     LoginModule,
     ShellModule,
-    AppRoutingModule
+    AppRoutingModule,
+    CookieModule.forRoot()
   ],
-  providers: [],
+  providers: [LoginGuard, HomeGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
