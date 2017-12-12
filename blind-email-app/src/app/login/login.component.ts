@@ -9,7 +9,7 @@ import 'rxjs/add/operator/first';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  loading: boolean = true;
+  loading: boolean = false;
 
   playIntro() {
     this.voiceService.speak('Welcome to blind email system, please login to continue. Click the button, or say login after the beep',
@@ -48,6 +48,7 @@ export class LoginComponent implements OnInit {
 
   clickLogin() {
     console.log('click')
+    this.voiceService.cancelVoice();
     this.authService.login()
       .subscribe(result => window.location.assign(result.url))
   }

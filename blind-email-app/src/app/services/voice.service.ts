@@ -3,8 +3,9 @@ declare var webkitSpeechRecognition: any;
 
 @Injectable()
 export class VoiceService {
+
   voiceKeywords = {
-    login : [
+    login: [
       'login', 'sign in', 'authenticate'
     ],
     logout: [
@@ -12,6 +13,15 @@ export class VoiceService {
     ],
     repeat: [
       'repeat', 'repeat menu'
+    ],
+    fetchMail: [
+      'fetch email', 'fetch mail', 'check email', 'check mail', 'get mail', 'get email', 'email'
+    ],
+    number: [
+      '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'
+    ],
+    return: [
+      'return', 'back', 'go back'
     ]
   }
 
@@ -22,31 +32,41 @@ export class VoiceService {
     return this.voiceKeywords[key].includes(input);
   }
 
+  // getNumberIndex(number: string) {
+  //   return this.voiceKeywords.number.indexOf(number);
+  // }
+
   speak(text: string, voice: string = 'female', onload?: () => any, onend?: () => any) {
-    let voiceInterval = setInterval(() => {
-      let voices = window.speechSynthesis.getVoices();
-      if (voices.length) {
-        if (onload) {
-          console.log('fn onload', onload);
-          onload();
-        }
+    let msg = new SpeechSynthesisUtterance(text);
+    msg.rate = 1.1;
+    msg.pitch = 1.2;
+    // let voiceInterval = setInterval(() => {
+    // let voices = window.speechSynthesis.getVoices();
+    // if (voices.length) {
+    // if (onload) {
+    //   console.log('fn onload', onload);
+    //   onload();
+    // }
 
-        clearInterval(voiceInterval);
+    // clearInterval(voiceInterval);
 
-        let msg = new SpeechSynthesisUtterance(text);
-
-        voice == 'male' ? msg.voice = voices[50] : msg.voice = voices[49];
+    // let msg = new SpeechSynthesisUtterance(text);
 
 
-        if (onend) {
-          console.log('fn onend', onend);
-          msg.onend = onend;
-        }
+    // voice == 'male' ? msg.voice = voices[50] : msg.voice = voices[49];
 
-        // console.log(msg.onend);
-        window.speechSynthesis.speak(msg);
-      }
-    }, 250)
+
+    if (onend) {
+      console.log('fn onend', onend);
+      msg.onend = onend;
+    }
+
+    // console.log(msg.onend);
+    // msg.rate = 2.0;
+
+    window.speechSynthesis.speak(msg);
+    // }
+    // }, 250)
   }
 
   beep() {
@@ -61,24 +81,28 @@ export class VoiceService {
     return new Promise((resolve, reject) => {
       let input: string = '';
       let rec = new webkitSpeechRecognition();
-  
+
       rec.onstart = () => {
         console.log('Listening...');
       }
-  
+
       rec.onresult = e => {
         console.log('Found result');
         console.log(e);
         input = e.results[0][0].transcript;
       }
-  
+
       rec.onend = e => {
         console.log('Listening end');
         console.log(e);
         resolve(input);
       }
-  
+
       rec.start();
     })
+  }
+
+  cancelVoice() {
+    if (window.speechSynthesis.speaking) window.speechSynthesis.cancel();
   }
 }
