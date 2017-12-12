@@ -109,13 +109,24 @@ var EmailService = (function () {
     EmailService.prototype.apiUrl = function (endpoint) {
         return "http://127.0.0.1:3000/api/v1/" + endpoint;
     };
-    EmailService.prototype.fetchEmail = function () {
-        return this.http.post(this.apiUrl('email/get'), {}, {
+    EmailService.prototype.fetchEmail = function (pageToken) {
+        return this.http.post(this.apiUrl('email/get'), pageToken ? {
+            pageToken: pageToken
+        } : {}, {
             withCredentials: true
         }).map(function (response) { return response.json(); });
     };
     EmailService.prototype.decodeEmail = function (encodedEmail) {
         return (new __WEBPACK_IMPORTED_MODULE_2_buffer__["Buffer"](encodedEmail, 'base64')).toString();
+    };
+    EmailService.prototype.sendEmail = function (emailAddress, subject, body) {
+        return this.http.post(this.apiUrl('email/send'), {
+            receiverEmail: emailAddress,
+            mailSubject: subject,
+            mailBody: body
+        }, {
+            withCredentials: true
+        }).map(function (response) { return response.json(); });
     };
     return EmailService;
 }());
@@ -227,6 +238,9 @@ var ShellComponent = (function () {
     }
     ShellComponent.prototype.emailMenuInput = function (emails) {
         var _this = this;
+        console.log('==========================================');
+        console.log(emails);
+        console.log('==========================================');
         this.toggleListen(true);
         this.voiceService.listen()
             .then(function (result) {
@@ -261,6 +275,19 @@ var ShellComponent = (function () {
                     _this.voiceService.speak('Returning to previous menu.', 'female', null, function () {
                         _this.toggleSpeak(false);
                         _this.playMenu();
+                    });
+                })();
+            }
+            else if (_this.voiceService.keywordMatch(result, 'more')) {
+                return (function () {
+                    _this.toggleSpeak(true);
+                    _this.voiceService.speak('Fetching more emails.', 'female', null, function () {
+                        _this.toggleSpeak(false);
+                        _this.emailService.fetchEmail(emails.nextPageToken)
+                            .subscribe(function (result) {
+                            console.log(result);
+                            _this.emailMenu(result.data);
+                        });
                     });
                 })();
             }
@@ -303,20 +330,22 @@ var ShellComponent = (function () {
                 });
             }
             else if (_this.voiceService.keywordMatch(result, 'repeat')) {
-                _this.playMenu();
-                return;
+                return _this.playMenu();
             }
             else if (_this.voiceService.keywordMatch(result, 'fetchMail')) {
                 _this.toggleSpeak(true);
                 _this.voiceService.speak('Fetching emails. Please wait.', 'female', null, function () {
                     _this.toggleSpeak(false);
-                    _this.emailService.fetchEmail()
+                    return _this.emailService.fetchEmail()
                         .subscribe(function (result) {
                         console.log(result);
                         _this.emailMenu(result.data);
                     });
                 });
                 return;
+            }
+            else if (_this.voiceService.keywordMatch(result, 'send')) {
+                _this.inputEmailAddress();
             }
             else {
                 _this.toggleSpeak(true);
@@ -339,6 +368,118 @@ var ShellComponent = (function () {
         this.voiceService.speak(menu, 'female', null, function () {
             _this.toggleSpeak(false);
             _this.voiceInput();
+        });
+    };
+    ShellComponent.prototype.inputEmailAddress = function () {
+        var _this = this;
+        this.toggleSpeak(true);
+        this.voiceService.speak('Please speak the email address of the recipient.', 'female', null, function () {
+            _this.toggleSpeak(false);
+            _this.toggleListen(true);
+            _this.voiceService.listen()
+                .then(function (emailAddress) {
+                _this.toggleListen(false);
+                var _emailAddress = emailAddress.replace(/\s+/g, '').toLocaleLowerCase();
+                console.log(_emailAddress);
+                var emailRegex = /\S+@\S+\.\S+/;
+                if (!emailRegex.test(_emailAddress)) {
+                    return (function () {
+                        _this.toggleSpeak(true);
+                        _this.voiceService.speak('Sorry, please provide a valid email address.', 'female', null, function () {
+                            _this.toggleSpeak(false);
+                            _this.inputEmailAddress();
+                        });
+                    })();
+                }
+                else {
+                    _this.inputEmailSubject(_emailAddress);
+                }
+            });
+        });
+    };
+    ShellComponent.prototype.inputEmailSubject = function (emailAddress) {
+        var _this = this;
+        this.toggleSpeak(true);
+        this.voiceService.speak('Please speak the subject of the email.', 'female', null, function () {
+            _this.toggleSpeak(false);
+            _this.voiceService.listen()
+                .then(function (subject) {
+                console.log(subject);
+                if (subject.trim() === '') {
+                    return (function () {
+                        _this.toggleSpeak(true);
+                        _this.voiceService.speak('Sorry, please provide a valid subject.', 'female', null, function () {
+                            _this.toggleSpeak(false);
+                            _this.inputEmailSubject(emailAddress);
+                        });
+                    })();
+                }
+                else {
+                    _this.inputEmailBody(emailAddress, subject);
+                }
+            });
+        });
+    };
+    ShellComponent.prototype.inputEmailBody = function (emailAddress, subject) {
+        var _this = this;
+        this.toggleSpeak(true);
+        this.voiceService.speak('Please speak the message.', 'female', null, function () {
+            _this.toggleSpeak(false);
+            _this.voiceService.listen()
+                .then(function (message) {
+                console.log(message);
+                if (message.trim() === '') {
+                    return (function () {
+                        _this.toggleSpeak(true);
+                        _this.voiceService.speak('Sorry, please provide a email body.', 'female', null, function () {
+                            _this.toggleSpeak(false);
+                            _this.inputEmailBody(emailAddress, subject);
+                        });
+                    })();
+                }
+                else {
+                    _this.sendEmail(emailAddress, subject, message);
+                }
+            });
+        });
+    };
+    ShellComponent.prototype.sendEmail = function (emailAddress, subject, body) {
+        var _this = this;
+        var mail = {
+            emailAddress: emailAddress, subject: subject, body: body
+        };
+        console.log(mail);
+        this.toggleSpeak(true);
+        this.voiceService.speak('Are you sure you want to send the email?', 'female', null, function () {
+            _this.toggleSpeak(false);
+            _this.toggleListen(true);
+            _this.voiceService.listen()
+                .then(function (result) {
+                _this.toggleListen(false);
+                if (_this.voiceService.keywordMatch(result, 'yes')) {
+                    console.log('yes');
+                    return (function () {
+                        _this.emailService.sendEmail(emailAddress, subject, body)
+                            .subscribe(function (result) {
+                            console.log(result);
+                            _this.toggleSpeak(true);
+                            _this.voiceService.speak('Your email has been sent successfully!', 'female', null, function () {
+                                _this.toggleSpeak(false);
+                                _this.playMenu();
+                            });
+                        });
+                    })();
+                }
+                else if (_this.voiceService.keywordMatch(result, 'no')) {
+                }
+                else {
+                    return (function () {
+                        _this.voiceService.speak('Sorry i was not able to get that, please try again!', 'female', null, function () {
+                            _this.sendEmail(emailAddress, subject, body);
+                        });
+                    })();
+                }
+            });
         });
     };
     ShellComponent.prototype.ngOnInit = function () {
@@ -770,6 +911,18 @@ var VoiceService = (function () {
             ],
             return: [
                 'return', 'back', 'go back'
+            ],
+            more: [
+                'more', 'more email', 'more mail', 'fetch more'
+            ],
+            send: [
+                'send', 'send mail', 'send email', 'send message', 'write', 'write email', 'write mail'
+            ],
+            yes: [
+                'yes', 'sure', 'confirm', 'positive'
+            ],
+            no: [
+                'no', 'negative'
             ]
         };
     }
