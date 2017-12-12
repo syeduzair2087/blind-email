@@ -22,6 +22,18 @@ export class VoiceService {
     ],
     return: [
       'return', 'back', 'go back'
+    ],
+    more: [
+      'more', 'more email', 'more mail', 'fetch more'
+    ],
+    send: [
+      'send', 'send mail', 'send email', 'send message', 'write', 'write email', 'write mail'
+    ],
+    yes: [
+      'yes', 'sure', 'confirm', 'positive'
+    ], 
+    no: [
+      'no', 'negative'
     ]
   }
 
