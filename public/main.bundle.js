@@ -4,10 +4,10 @@ webpackJsonp([2,5],{
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__services_auth_service__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__services_auth_service__ = __webpack_require__(50);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_app_services_voice_service__ = __webpack_require__(32);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_first__ = __webpack_require__(136);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_first__ = __webpack_require__(137);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_first___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_first__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LoginComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -70,8 +70,8 @@ var LoginComponent = (function () {
 LoginComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__angular_core__["_11" /* Component */])({
         selector: 'app-login',
-        template: __webpack_require__(337),
-        styles: [__webpack_require__(325)]
+        template: __webpack_require__(338),
+        styles: [__webpack_require__(326)]
     }),
     __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2_app_services_voice_service__["a" /* VoiceService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2_app_services_voice_service__["a" /* VoiceService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_0__services_auth_service__["a" /* AuthService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__services_auth_service__["a" /* AuthService */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_1__angular_core__["q" /* ChangeDetectorRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_core__["q" /* ChangeDetectorRef */]) === "function" && _c || Object])
 ], LoginComponent);
@@ -86,8 +86,8 @@ var _a, _b, _c;
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__(71);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_buffer__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_buffer__ = __webpack_require__(51);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_buffer___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_buffer__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return EmailService; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -109,23 +109,16 @@ var EmailService = (function () {
     EmailService.prototype.apiUrl = function (endpoint) {
         return "http://127.0.0.1:3000/api/v1/" + endpoint;
     };
-<<<<<<< HEAD
-    EmailService.prototype.fetchEmail = function () {
-        return this.http.post(this.apiUrl('email/get'), {}, {
-=======
     EmailService.prototype.fetchEmail = function (pageToken) {
         return this.http.post(this.apiUrl('email/get'), pageToken ? {
             pageToken: pageToken
         } : {}, {
->>>>>>> 8dc28f9c7fc799cea422cb0bb07c7186270465a4
             withCredentials: true
         }).map(function (response) { return response.json(); });
     };
     EmailService.prototype.decodeEmail = function (encodedEmail) {
         return (new __WEBPACK_IMPORTED_MODULE_2_buffer__["Buffer"](encodedEmail, 'base64')).toString();
     };
-<<<<<<< HEAD
-=======
     EmailService.prototype.sendEmail = function (emailAddress, subject, body) {
         return this.http.post(this.apiUrl('email/send'), {
             receiverEmail: emailAddress,
@@ -135,12 +128,11 @@ var EmailService = (function () {
             withCredentials: true
         }).map(function (response) { return response.json(); });
     };
->>>>>>> 8dc28f9c7fc799cea422cb0bb07c7186270465a4
     return EmailService;
 }());
 EmailService = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["c" /* Injectable */])(),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */]) === "function" && _a || Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["c" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_http__["c" /* Http */]) === "function" && _a || Object])
 ], EmailService);
 
 var _a;
@@ -152,8 +144,69 @@ var _a;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_http__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(5);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return EntertainmentService; });
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+var EntertainmentService = (function () {
+    function EntertainmentService(http) {
+        this.http = http;
+    }
+    EntertainmentService.prototype.apiUrl = function (endpoint) {
+        return "http://127.0.0.1:3000/api/v1/" + endpoint;
+    };
+    EntertainmentService.prototype.fetchPdf = function (index) {
+        var title;
+        switch (index) {
+            case 1:
+                title = 'pdf_sample';
+                break;
+            case 2:
+                title = 'quarterly_magazine_sample';
+                break;
+            case 3:
+                title = 'Test_Plan';
+                break;
+            case 4:
+                title = 'pdf_sample';
+                break;
+            case 5:
+                title = 'pdf_sample';
+                break;
+        }
+        var params = new __WEBPACK_IMPORTED_MODULE_0__angular_http__["b" /* URLSearchParams */]();
+        params.append('fileName', title);
+        return this.http.get(this.apiUrl('entertainment/getPdfText'), { params: params })
+            .map(function (response) { return response.json(); });
+    };
+    return EntertainmentService;
+}());
+EntertainmentService = __decorate([
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__angular_core__["c" /* Injectable */])(),
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_0__angular_http__["c" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__angular_http__["c" /* Http */]) === "function" && _a || Object])
+], EntertainmentService);
+
+var _a;
+//# sourceMappingURL=entertainment.service.js.map
+
+/***/ }),
+
+/***/ 119:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ngx_cookie__ = __webpack_require__(332);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ngx_cookie__ = __webpack_require__(333);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_router__ = __webpack_require__(72);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return HomeGuard; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LoginGuard; });
@@ -210,15 +263,16 @@ var _a, _b, _c, _d;
 
 /***/ }),
 
-/***/ 119:
+/***/ 120:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__services_voice_service__ = __webpack_require__(32);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_app_services_auth_service__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_app_services_auth_service__ = __webpack_require__(50);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_router__ = __webpack_require__(72);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_app_services_email_service__ = __webpack_require__(117);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_app_services_entertainment_service__ = __webpack_require__(118);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ShellComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -234,28 +288,29 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 var ShellComponent = (function () {
-    function ShellComponent(voiceService, authService, router, emailService, changeDetector) {
+    function ShellComponent(voiceService, authService, router, emailService, changeDetector, entertainmentService) {
         this.voiceService = voiceService;
         this.authService = authService;
         this.router = router;
         this.emailService = emailService;
         this.changeDetector = changeDetector;
+        this.entertainmentService = entertainmentService;
         this.speaking = true;
         this.listening = false;
     }
     ShellComponent.prototype.emailMenuInput = function (emails) {
         var _this = this;
-<<<<<<< HEAD
-=======
-        console.log('==========================================');
-        console.log(emails);
-        console.log('==========================================');
->>>>>>> 8dc28f9c7fc799cea422cb0bb07c7186270465a4
+        // console.log('==========================================')
+        // console.log(emails)
+        // console.log('==========================================')
         this.toggleListen(true);
         this.voiceService.listen()
             .then(function (result) {
             _this.toggleListen(false);
+            if (result.split(' ').length !== 1)
+                result = result.match(/\d+/).join('');
             console.log(result);
             if (_this.voiceService.keywordMatch(result, 'number')) {
                 if ('parts' in emails.messages[parseInt(result) - 1].payload) {
@@ -289,8 +344,6 @@ var ShellComponent = (function () {
                     });
                 })();
             }
-<<<<<<< HEAD
-=======
             else if (_this.voiceService.keywordMatch(result, 'more')) {
                 return (function () {
                     _this.toggleSpeak(true);
@@ -304,7 +357,6 @@ var ShellComponent = (function () {
                     });
                 })();
             }
->>>>>>> 8dc28f9c7fc799cea422cb0bb07c7186270465a4
             else {
                 _this.toggleSpeak(true);
                 _this.voiceService.speak('Sorry, i was not able to get that, please try again!', 'female', null, function () {
@@ -326,6 +378,53 @@ var ShellComponent = (function () {
             });
         });
     };
+    ShellComponent.prototype.magazineInput = function () {
+        var _this = this;
+        this.toggleListen(true);
+        this.voiceService.listen()
+            .then(function (result) {
+            _this.toggleListen(false);
+            if (result.split(' ').length !== 1)
+                result = result.match(/\d+/).join('');
+            console.log('result', result);
+            if (_this.voiceService.keywordMatch(result, 'number') && parseInt(result) >= 1 && parseInt(result) <= 5) {
+                _this.toggleSpeak(true);
+                _this.voiceService.speak('Fetching magazine. Please wait.', 'female', null, function () {
+                    _this.toggleSpeak(false);
+                    _this.entertainmentService.fetchPdf(parseInt(result))
+                        .subscribe(function (pdf) {
+                        _this.toggleSpeak(true);
+                        _this.voiceService.speak(pdf.data, 'female', null, function () {
+                            _this.voiceService.speak('I have finished reading the magazine. Select another number, or speak return, to return to the previous menu.', 'female', null, function () {
+                                _this.toggleSpeak(false);
+                                return _this.magazineInput();
+                            });
+                        });
+                    });
+                });
+            }
+            else if (_this.voiceService.keywordMatch(result, 'return')) {
+                _this.voiceService.speak('Returning to previous menu.', 'female', null, function () {
+                    return _this.playMenu();
+                });
+            }
+            else {
+                _this.toggleSpeak(true);
+                _this.voiceService.speak('Sorry, i was not able to get that. Please try again!', 'female', null, function () {
+                    _this.toggleSpeak(false);
+                    return _this.magazineInput();
+                });
+            }
+        });
+    };
+    ShellComponent.prototype.magazineMenu = function () {
+        var _this = this;
+        this.toggleSpeak(true);
+        this.voiceService.speak('Please speak a number between 1 to 5, to fetch and read a magazine. Or return, to return to the previous menu', 'female', null, function () {
+            _this.toggleSpeak(false);
+            return _this.magazineInput();
+        });
+    };
     ShellComponent.prototype.voiceInput = function () {
         var _this = this;
         this.toggleListen(true);
@@ -344,22 +443,13 @@ var ShellComponent = (function () {
                 });
             }
             else if (_this.voiceService.keywordMatch(result, 'repeat')) {
-<<<<<<< HEAD
-                _this.playMenu();
-                return;
-=======
                 return _this.playMenu();
->>>>>>> 8dc28f9c7fc799cea422cb0bb07c7186270465a4
             }
             else if (_this.voiceService.keywordMatch(result, 'fetchMail')) {
                 _this.toggleSpeak(true);
                 _this.voiceService.speak('Fetching emails. Please wait.', 'female', null, function () {
                     _this.toggleSpeak(false);
-<<<<<<< HEAD
-                    _this.emailService.fetchEmail()
-=======
                     return _this.emailService.fetchEmail()
->>>>>>> 8dc28f9c7fc799cea422cb0bb07c7186270465a4
                         .subscribe(function (result) {
                         console.log(result);
                         _this.emailMenu(result.data);
@@ -367,12 +457,12 @@ var ShellComponent = (function () {
                 });
                 return;
             }
-<<<<<<< HEAD
-=======
             else if (_this.voiceService.keywordMatch(result, 'send')) {
                 _this.inputEmailAddress();
             }
->>>>>>> 8dc28f9c7fc799cea422cb0bb07c7186270465a4
+            else if (_this.voiceService.keywordMatch(result, 'magazine')) {
+                _this.magazineMenu();
+            }
             else {
                 _this.toggleSpeak(true);
                 _this.voiceService.speak('Sorry, i was not able to get that. Please try again!', 'female', null, function () {
@@ -389,15 +479,13 @@ var ShellComponent = (function () {
     };
     ShellComponent.prototype.playMenu = function () {
         var _this = this;
-        var menu = 'Check mail, to check your email. Send mail, to send email. Logout, to logout of the system. Or repeat, to repeat the menu.';
+        var menu = 'Check mail, to check your email. Send mail, to send email. Read magazine, to read a magazine. Logout, to logout of the system. Or repeat, to repeat the menu.';
         this.toggleSpeak(true);
         this.voiceService.speak(menu, 'female', null, function () {
             _this.toggleSpeak(false);
             _this.voiceInput();
         });
     };
-<<<<<<< HEAD
-=======
     ShellComponent.prototype.inputEmailAddress = function () {
         var _this = this;
         this.toggleSpeak(true);
@@ -510,7 +598,6 @@ var ShellComponent = (function () {
             });
         });
     };
->>>>>>> 8dc28f9c7fc799cea422cb0bb07c7186270465a4
     ShellComponent.prototype.ngOnInit = function () {
         this.playIntro();
     };
@@ -529,18 +616,18 @@ var ShellComponent = (function () {
 ShellComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__angular_core__["_11" /* Component */])({
         selector: 'app-shell',
-        template: __webpack_require__(339),
-        styles: [__webpack_require__(327)]
+        template: __webpack_require__(340),
+        styles: [__webpack_require__(328)]
     }),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_0__services_voice_service__["a" /* VoiceService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__services_voice_service__["a" /* VoiceService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2_app_services_auth_service__["a" /* AuthService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2_app_services_auth_service__["a" /* AuthService */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__angular_router__["a" /* Router */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__angular_router__["a" /* Router */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_4_app_services_email_service__["a" /* EmailService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4_app_services_email_service__["a" /* EmailService */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_1__angular_core__["q" /* ChangeDetectorRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_core__["q" /* ChangeDetectorRef */]) === "function" && _e || Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_0__services_voice_service__["a" /* VoiceService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__services_voice_service__["a" /* VoiceService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2_app_services_auth_service__["a" /* AuthService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2_app_services_auth_service__["a" /* AuthService */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__angular_router__["a" /* Router */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__angular_router__["a" /* Router */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_4_app_services_email_service__["a" /* EmailService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4_app_services_email_service__["a" /* EmailService */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_1__angular_core__["q" /* ChangeDetectorRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_core__["q" /* ChangeDetectorRef */]) === "function" && _e || Object, typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_5_app_services_entertainment_service__["a" /* EntertainmentService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5_app_services_entertainment_service__["a" /* EntertainmentService */]) === "function" && _f || Object])
 ], ShellComponent);
 
-var _a, _b, _c, _d, _e;
+var _a, _b, _c, _d, _e, _f;
 //# sourceMappingURL=shell.component.js.map
 
 /***/ }),
 
-/***/ 248:
+/***/ 249:
 /***/ (function(module, exports) {
 
 function webpackEmptyContext(req) {
@@ -549,20 +636,20 @@ function webpackEmptyContext(req) {
 webpackEmptyContext.keys = function() { return []; };
 webpackEmptyContext.resolve = webpackEmptyContext;
 module.exports = webpackEmptyContext;
-webpackEmptyContext.id = 248;
+webpackEmptyContext.id = 249;
 
 
 /***/ }),
 
-/***/ 249:
+/***/ 250:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_platform_browser_dynamic__ = __webpack_require__(259);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__app_app_module__ = __webpack_require__(262);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__environments_environment__ = __webpack_require__(267);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_platform_browser_dynamic__ = __webpack_require__(260);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__app_app_module__ = __webpack_require__(263);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__environments_environment__ = __webpack_require__(268);
 
 
 
@@ -575,15 +662,15 @@ __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__angular_platform_browser_dyna
 
 /***/ }),
 
-/***/ 260:
+/***/ 261:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__login_login_component__ = __webpack_require__(116);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_router__ = __webpack_require__(72);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_app_shell_shell_component__ = __webpack_require__(119);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_app_services_guard_service__ = __webpack_require__(118);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_app_shell_shell_component__ = __webpack_require__(120);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_app_services_guard_service__ = __webpack_require__(119);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppRoutingModule; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -617,12 +704,12 @@ AppRoutingModule = __decorate([
 
 /***/ }),
 
-/***/ 261:
+/***/ 262:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_app_services_voice_service__ = __webpack_require__(32);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_Rx__ = __webpack_require__(341);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_Rx__ = __webpack_require__(342);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_Rx___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_rxjs_Rx__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_core__ = __webpack_require__(5);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppComponent; });
@@ -656,8 +743,8 @@ var AppComponent = (function () {
 AppComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__angular_core__["_11" /* Component */])({
         selector: 'app-root',
-        template: __webpack_require__(336),
-        styles: [__webpack_require__(324)]
+        template: __webpack_require__(337),
+        styles: [__webpack_require__(325)]
     }),
     __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_0_app_services_voice_service__["a" /* VoiceService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0_app_services_voice_service__["a" /* VoiceService */]) === "function" && _a || Object])
 ], AppComponent);
@@ -667,20 +754,20 @@ var _a;
 
 /***/ }),
 
-/***/ 262:
+/***/ 263:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__app_routing_module__ = __webpack_require__(260);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__app_routing_module__ = __webpack_require__(261);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_platform_browser__ = __webpack_require__(31);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_core__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_forms__ = __webpack_require__(258);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_http__ = __webpack_require__(71);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__app_component__ = __webpack_require__(261);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_app_login_login_module__ = __webpack_require__(263);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_app_shell_shell_module__ = __webpack_require__(266);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_app_services_guard_service__ = __webpack_require__(118);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_ngx_cookie__ = __webpack_require__(332);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_forms__ = __webpack_require__(259);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_http__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__app_component__ = __webpack_require__(262);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_app_login_login_module__ = __webpack_require__(264);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_app_shell_shell_module__ = __webpack_require__(267);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_app_services_guard_service__ = __webpack_require__(119);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_ngx_cookie__ = __webpack_require__(333);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -726,7 +813,7 @@ AppModule = __decorate([
 
 /***/ }),
 
-/***/ 263:
+/***/ 264:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -734,8 +821,8 @@ AppModule = __decorate([
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_common__ = __webpack_require__(25);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__login_component__ = __webpack_require__(116);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_app_shared_shared_module__ = __webpack_require__(265);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_app_services_auth_service__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_app_shared_shared_module__ = __webpack_require__(266);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_app_services_auth_service__ = __webpack_require__(50);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LoginModule; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -772,7 +859,7 @@ LoginModule = __decorate([
 
 /***/ }),
 
-/***/ 264:
+/***/ 265:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -798,8 +885,8 @@ var LoadingComponent = (function () {
 LoadingComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_11" /* Component */])({
         selector: 'app-loading',
-        template: __webpack_require__(338),
-        styles: [__webpack_require__(326)]
+        template: __webpack_require__(339),
+        styles: [__webpack_require__(327)]
     }),
     __metadata("design:paramtypes", [])
 ], LoadingComponent);
@@ -808,13 +895,13 @@ LoadingComponent = __decorate([
 
 /***/ }),
 
-/***/ 265:
+/***/ 266:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_common__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__loading_loading_component__ = __webpack_require__(264);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__loading_loading_component__ = __webpack_require__(265);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SharedModule; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -846,16 +933,17 @@ SharedModule = __decorate([
 
 /***/ }),
 
-/***/ 266:
+/***/ 267:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_common__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__shell_component__ = __webpack_require__(119);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_app_services_auth_service__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__shell_component__ = __webpack_require__(120);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_app_services_auth_service__ = __webpack_require__(50);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_app_services_voice_service__ = __webpack_require__(32);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_app_services_email_service__ = __webpack_require__(117);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_app_services_entertainment_service__ = __webpack_require__(118);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ShellModule; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -863,6 +951,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
 
 
 
@@ -883,7 +972,8 @@ ShellModule = __decorate([
         providers: [
             __WEBPACK_IMPORTED_MODULE_3_app_services_auth_service__["a" /* AuthService */],
             __WEBPACK_IMPORTED_MODULE_4_app_services_voice_service__["a" /* VoiceService */],
-            __WEBPACK_IMPORTED_MODULE_5_app_services_email_service__["a" /* EmailService */]
+            __WEBPACK_IMPORTED_MODULE_5_app_services_email_service__["a" /* EmailService */],
+            __WEBPACK_IMPORTED_MODULE_6_app_services_entertainment_service__["a" /* EntertainmentService */]
         ]
     })
 ], ShellModule);
@@ -892,10 +982,8 @@ ShellModule = __decorate([
 
 /***/ }),
 
-/***/ 267:
+/***/ 268:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
-<<<<<<< HEAD
-=======
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return environment; });
@@ -954,128 +1042,9 @@ var VoiceService = (function () {
             ],
             no: [
                 'no', 'negative'
-            ]
-        };
-    }
-    VoiceService.prototype.keywordMatch = function (input, key) {
-        return this.voiceKeywords[key].includes(input);
-    };
-    // getNumberIndex(number: string) {
-    //   return this.voiceKeywords.number.indexOf(number);
-    // }
-    VoiceService.prototype.speak = function (text, voice, onload, onend) {
-        if (voice === void 0) { voice = 'female'; }
-        var msg = new SpeechSynthesisUtterance(text);
-        msg.rate = 1.1;
-        msg.pitch = 1.2;
-        // let voiceInterval = setInterval(() => {
-        // let voices = window.speechSynthesis.getVoices();
-        // if (voices.length) {
-        // if (onload) {
-        //   console.log('fn onload', onload);
-        //   onload();
-        // }
-        // clearInterval(voiceInterval);
-        // let msg = new SpeechSynthesisUtterance(text);
-        // voice == 'male' ? msg.voice = voices[50] : msg.voice = voices[49];
-        if (onend) {
-            console.log('fn onend', onend);
-            msg.onend = onend;
-        }
-        // console.log(msg.onend);
-        // msg.rate = 2.0;
-        window.speechSynthesis.speak(msg);
-        // }
-        // }, 250)
-    };
-    VoiceService.prototype.beep = function () {
-        var beep = new Audio();
-        beep.src = './assets/beep.mp3';
-        beep.load();
-        beep.play();
-    };
-    VoiceService.prototype.listen = function () {
-        this.beep();
-        return new Promise(function (resolve, reject) {
-            var input = '';
-            var rec = new webkitSpeechRecognition();
-            rec.onstart = function () {
-                console.log('Listening...');
-            };
-            rec.onresult = function (e) {
-                console.log('Found result');
-                console.log(e);
-                input = e.results[0][0].transcript;
-            };
-            rec.onend = function (e) {
-                console.log('Listening end');
-                console.log(e);
-                resolve(input);
-            };
-            rec.start();
-        });
-    };
-    VoiceService.prototype.cancelVoice = function () {
-        if (window.speechSynthesis.speaking)
-            window.speechSynthesis.cancel();
-    };
-    return VoiceService;
-}());
-VoiceService = __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["c" /* Injectable */])(),
-    __metadata("design:paramtypes", [])
-], VoiceService);
->>>>>>> 8dc28f9c7fc799cea422cb0bb07c7186270465a4
-
-//# sourceMappingURL=voice.service.js.map
-
-/***/ }),
-
-<<<<<<< HEAD
-/***/ 32:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-=======
-/***/ 324:
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(21)(false);
-// imports
-
->>>>>>> 8dc28f9c7fc799cea422cb0bb07c7186270465a4
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(5);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return VoiceService; });
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-var VoiceService = (function () {
-    function VoiceService() {
-        this.voiceKeywords = {
-            login: [
-                'login', 'sign in', 'authenticate'
             ],
-            logout: [
-                'logout', 'log out', 'sign out'
-            ],
-            repeat: [
-                'repeat', 'repeat menu'
-            ],
-            fetchMail: [
-                'fetch email', 'fetch mail', 'check email', 'check mail', 'get mail', 'get email', 'email'
-            ],
-            number: [
-                '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'
-            ],
-            return: [
-                'return', 'back', 'go back'
+            magazine: [
+                'read magazine', 'magazine'
             ]
         };
     }
@@ -1149,24 +1118,6 @@ VoiceService = __decorate([
 ], VoiceService);
 
 //# sourceMappingURL=voice.service.js.map
-
-/***/ }),
-
-/***/ 324:
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(21)(false);
-// imports
-
-
-// module
-exports.push([module.i, "", ""]);
-
-// exports
-
-
-/*** EXPORTS FROM exports-loader ***/
-module.exports = module.exports.toString();
 
 /***/ }),
 
@@ -1196,7 +1147,7 @@ exports = module.exports = __webpack_require__(21)(false);
 
 
 // module
-exports.push([module.i, ".loading-bg {\n    position: absolute;\n    width: 100%;\n    height: 100vh;\n    background-color: rgba(0, 0, 0, 0.8);\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n    z-index: 99999;\n}\n\n.loading-spinner {\n    color: whitesmoke;\n}", ""]);
+exports.push([module.i, "", ""]);
 
 // exports
 
@@ -1214,6 +1165,24 @@ exports = module.exports = __webpack_require__(21)(false);
 
 
 // module
+exports.push([module.i, ".loading-bg {\n    position: absolute;\n    width: 100%;\n    height: 100vh;\n    background-color: rgba(0, 0, 0, 0.8);\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n    z-index: 99999;\n}\n\n.loading-spinner {\n    color: whitesmoke;\n}", ""]);
+
+// exports
+
+
+/*** EXPORTS FROM exports-loader ***/
+module.exports = module.exports.toString();
+
+/***/ }),
+
+/***/ 328:
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(21)(false);
+// imports
+
+
+// module
 exports.push([module.i, ".home-bg {\n    position: absolute;\n    width: 100%;\n    height: 100vh;\n    /* background-color: rgba(0, 0, 0, 0.8); */\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-align: center;\n        -ms-flex-align: center;\n            align-items: center;\n    -webkit-box-pack: center;\n        -ms-flex-pack: center;\n            justify-content: center;\n    z-index: 99999;\n}\n\n.home-bg i {\n    color: whitesmoke\n}", ""]);
 
 // exports
@@ -1224,41 +1193,41 @@ module.exports = module.exports.toString();
 
 /***/ }),
 
-/***/ 336:
+/***/ 337:
 /***/ (function(module, exports) {
 
 module.exports = "<router-outlet></router-outlet>"
 
 /***/ }),
 
-/***/ 337:
+/***/ 338:
 /***/ (function(module, exports) {
 
 module.exports = "<app-loading *ngIf=\"loading\"></app-loading>\n<div *ngIf=\"!loading\">\n  <div class=\"row text-center\">\n    <img src=\"./assets/blind-email-logo.png\" alt=\"\" style=\"margin:272px 0px 72px 0px\" class=\"animated fadeInDown\">\n  </div>\n  <div class=\"row text-center\">\n    <button class=\"btn btn-primary btn-lg animated fadeInUp\" (click)=\"clickLogin()\">Get Started</button>\n  </div>\n</div>"
 
 /***/ }),
 
-/***/ 338:
+/***/ 339:
 /***/ (function(module, exports) {
 
 module.exports = "<div class=\"loading-bg\">\n    <i class=\"fa fa-spinner fa-pulse fa-4x fa-fw loading-spinner\"></i>\n</div>"
 
 /***/ }),
 
-/***/ 339:
+/***/ 340:
 /***/ (function(module, exports) {
 
 module.exports = "<div class=\"home-bg row\">\n    <i class=\"fa fa-fw fa-5x fa-volume-up animated pulse infinite\" *ngIf=\"speaking\"></i>\n    <i class=\"fa fa-fw fa-5x fa-volume-off\" *ngIf=\"!speaking\"></i>\n    <i class=\"fa fa-fw fa-5x fa-microphone animated pulse infinite\" *ngIf=\"listening\"></i>\n    <i class=\"fa fa-fw fa-5x fa-microphone-slash\" *ngIf=\"!listening\"></i>\n</div>"
 
 /***/ }),
 
-/***/ 49:
+/***/ 50:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__(71);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__ = __webpack_require__(137);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__ = __webpack_require__(138);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AuthService; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -1292,7 +1261,7 @@ var AuthService = (function () {
 }());
 AuthService = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["c" /* Injectable */])(),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_http__["b" /* Http */]) === "function" && _a || Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__angular_http__["c" /* Http */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_http__["c" /* Http */]) === "function" && _a || Object])
 ], AuthService);
 
 var _a;
@@ -1300,19 +1269,13 @@ var _a;
 
 /***/ }),
 
-/***/ 625:
+/***/ 626:
 /***/ (function(module, exports, __webpack_require__) {
-<<<<<<< HEAD
 
-module.exports = __webpack_require__(249);
+module.exports = __webpack_require__(250);
 
-=======
-
-module.exports = __webpack_require__(249);
-
->>>>>>> 8dc28f9c7fc799cea422cb0bb07c7186270465a4
 
 /***/ })
 
-},[625]);
+},[626]);
 //# sourceMappingURL=main.bundle.js.map

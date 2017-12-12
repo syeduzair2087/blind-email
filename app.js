@@ -31,7 +31,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // app.use('/', index);
 app.use('/api/v1/email', email);
-app.use('/api', entertainment);
+app.use('/api/v1/entertainment', entertainment);
 app.get('*', (req, res, next) => {
   res.sendFile(path.join(__dirname, '/public/index.html'))
 })

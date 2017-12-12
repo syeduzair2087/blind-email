@@ -5,6 +5,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { AuthService } from 'app/services/auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { EmailService } from 'app/services/email.service';
+import { EntertainmentService } from 'app/services/entertainment.service';
 
 @Component({
   selector: 'app-shell',
@@ -16,13 +17,15 @@ export class ShellComponent implements OnInit {
   listening: boolean = false;
 
   emailMenuInput(emails) {
-    console.log('==========================================')
-    console.log(emails)
-    console.log('==========================================')
+    // console.log('==========================================')
+    // console.log(emails)
+    // console.log('==========================================')
     this.toggleListen(true);
     this.voiceService.listen()
       .then((result: string) => {
         this.toggleListen(false);
+        if (result.split(' ').length !== 1)
+          result = result.match(/\d+/).join('');
         console.log(result);
         if (this.voiceService.keywordMatch(result, 'number')) {
           if ('parts' in emails.messages[parseInt(result) - 1].payload) {
@@ -87,6 +90,51 @@ export class ShellComponent implements OnInit {
     })
   }
 
+  magazineInput() {
+    this.toggleListen(true);
+    this.voiceService.listen()
+      .then((result: string) => {
+        this.toggleListen(false);
+        if (result.split(' ').length !== 1)
+          result = result.match(/\d+/).join('');
+        console.log('result', result);
+        if (this.voiceService.keywordMatch(result, 'number') && parseInt(result) >= 1 && parseInt(result) <= 5) {
+          this.toggleSpeak(true);
+          this.voiceService.speak('Fetching magazine. Please wait.', 'female', null, () => {
+            this.toggleSpeak(false);
+            this.entertainmentService.fetchPdf(parseInt(result))
+              .subscribe(pdf => {
+                this.toggleSpeak(true);
+                this.voiceService.speak(pdf.data, 'female', null, () => {
+                  this.voiceService.speak('I have finished reading the magazine. Select another number, or speak return, to return to the previous menu.', 'female', null, () => {
+                    this.toggleSpeak(false);
+                    return this.magazineInput();
+                  })
+                })
+              })
+          })
+        } else if (this.voiceService.keywordMatch(result, 'return')) {
+          this.voiceService.speak('Returning to previous menu.', 'female', null, () => {
+            return this.playMenu();
+          })
+        } else {
+          this.toggleSpeak(true);
+          this.voiceService.speak('Sorry, i was not able to get that. Please try again!', 'female', null, () => {
+            this.toggleSpeak(false);
+            return this.magazineInput();
+          })
+        }
+      })
+  }
+
+  magazineMenu() {
+    this.toggleSpeak(true);
+    this.voiceService.speak('Please speak a number between 1 to 5, to fetch and read a magazine. Or return, to return to the previous menu', 'female', null, () => {
+      this.toggleSpeak(false);
+      return this.magazineInput();
+    })
+  }
+
   voiceInput() {
     this.toggleListen(true);
     this.voiceService.listen()
@@ -116,9 +164,9 @@ export class ShellComponent implements OnInit {
           })
           return;
         } else if (this.voiceService.keywordMatch(result, 'send')) {
-
           this.inputEmailAddress();
-
+        } else if (this.voiceService.keywordMatch(result, 'magazine')) {
+          this.magazineMenu();
         } else {
           this.toggleSpeak(true);
           this.voiceService.speak('Sorry, i was not able to get that. Please try again!', 'female', null, () => {
@@ -136,7 +184,7 @@ export class ShellComponent implements OnInit {
   }
 
   playMenu() {
-    let menu = 'Check mail, to check your email. Send mail, to send email. Logout, to logout of the system. Or repeat, to repeat the menu.'
+    let menu = 'Check mail, to check your email. Send mail, to send email. Read magazine, to read a magazine. Logout, to logout of the system. Or repeat, to repeat the menu.'
     this.toggleSpeak(true);
     this.voiceService.speak(menu, 'female', null, () => {
       this.toggleSpeak(false);
@@ -252,7 +300,7 @@ export class ShellComponent implements OnInit {
     })
   }
 
-  constructor(private voiceService: VoiceService, private authService: AuthService, private router: Router, private emailService: EmailService, private changeDetector: ChangeDetectorRef) { }
+  constructor(private voiceService: VoiceService, private authService: AuthService, private router: Router, private emailService: EmailService, private changeDetector: ChangeDetectorRef, private entertainmentService: EntertainmentService) { }
 
   ngOnInit() {
     this.playIntro();

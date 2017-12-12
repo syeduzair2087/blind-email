@@ -18,7 +18,7 @@ exports.getPdfText = (req, res, next) => {
 
             res.json({
                 message: 'Data extract successfully!',
-                data: data.join('')
+                data: data.join(' ')
             });
         })
     }

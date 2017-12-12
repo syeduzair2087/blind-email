@@ -34,6 +34,9 @@ export class VoiceService {
     ], 
     no: [
       'no', 'negative'
+    ],
+    magazine: [
+      'read magazine', 'magazine'
     ]
   }
 
