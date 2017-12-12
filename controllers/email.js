@@ -48,7 +48,7 @@ exports.getToken = (req, res, next) => {
     oauth2Client.getToken(req.query.code, function (err, token) {
         if (err) {
             console.log('Error while trying to retrieve access token', err);
-            res
+            return res
                 .status(err.code || 401)
                 .json({
                     message: 'Error while trying to retrieve access token.',
@@ -71,7 +71,7 @@ exports.getMessageList = (req, res, next) => {
         userId: 'me',
         labelIds: req.body.labelId || 'INBOX',
         pageToken: req.body.pageToken || '',
-        q: req.body.query || '',
+        q: req.body.query || 'in:inbox is:unread -category:(promotions OR social)',
         maxResults: 10,
         auth: auth,
     }, (err, result) => {
@@ -83,54 +83,52 @@ exports.getMessageList = (req, res, next) => {
                     message: 'Error while receiving Gmail inbox',
                     error: err.message
                 });
-            return;
         }
-        
-        if (!result.messages) {
-            res
-                .status(500)
-                .json({
-                    message: 'Error while receiving Gmail inbox'
-                });
-            return;
-        }
-
-        let messagesDetail = result.messages
-            .map(message => {
-                return new Promise((resolve, reject) => {
-                    getMessageDetail(message.id, auth)
-                        .then(messageDetail => resolve(messageDetail))
-                        .catch(err => reject(err));
-                });
-            });
-
-        Promise.all(messagesDetail)
-            .then(messagesList => {
-                res.json({
-                    message: 'Emails fetch successfully!',
-                    data: Object.assign({}, result, { messages: messagesList })
-                });
-            })
-            .catch(err => {
-                console.log('Promise all error', err)
-                res
-                    .status(102)
+        else {
+            if (!result.messages) {
+                return res
+                    .status(500)
                     .json({
-                        message: 'Error while receiving Gmail inbox or may it took to much time to process.',
-                        error: err
+                        message: 'Error while receiving Gmail inbox'
                     });
-            });
+            }
+
+            let messagePromiseList = result.messages
+                .map(message => {
+                    return new Promise((resolve, reject) => {
+                        getMessageDetail(message.id, auth)
+                            .then(messageDetail => resolve(messageDetail))
+                            .catch(err => reject(err));
+                    });
+                });
+
+            Promise.all(messagePromiseList)
+                .then(messageList => {
+                    res.json({
+                        message: 'Emails fetched successfully!',
+                        data: Object.assign({}, result, { messages: messageList })
+                    });
+                })
+                .catch(err => {
+                    console.log('Promise all error', err)
+                    res
+                        .status(102)
+                        .json({
+                            message: 'Error while receiving Gmail inbox or may be it took to much time to process.',
+                            error: err
+                        });
+                });
+        }
     });
 }
 
 exports.sendMail = (req, res, next) => {
     if (!req.body.receiverEmail || !req.body.mailSubject || !req.body.mailBody) {
-        res.
+        return res.
             status(400)
             .json({
                 message: 'Please provide required fields...'
             });
-        return;
     }
 
     let auth = oauth2Client;
@@ -143,13 +141,14 @@ exports.sendMail = (req, res, next) => {
         }
     }, (err, response) => {
         if (err) {
-            res.
+            return res.
                 status(err.code || 520)
                 .json({
                     message: 'Error while sending mail...',
                     err: err
                 });
         }
+
         res.json({
             message: 'Email send successfully!',
             data: response
@@ -162,7 +161,52 @@ exports.logout = (req, res, next) => {
     res.clearCookie("token");
     res.json({
         message: 'Logout successfully!'
-    })
+    });
+}
+
+exports.getLableList = (req, res, next) => {
+    let auth = oauth2Client;
+    auth.credentials = dencryptToken(req.cookies.token);
+    gmail.users.labels.list({
+        userId: 'me',
+        auth: auth,
+    }, (err, lableList) => {
+        if (err) {
+            return res.json({
+                message: 'Error while fetching lable list.',
+                error: err
+            });
+        }
+
+        res.send({
+            message: 'Label list fetched successfully!',
+            data: lableList
+        });
+    });
+}
+
+exports.getLableDetail = (req, res, next) => {
+    let auth = oauth2Client;
+    auth.credentials = dencryptToken(req.cookies.token);
+    gmail.users.labels.get({
+        id: req.query.labelId || 'CATEGORY_FORUMS',
+        userId: 'me',
+        auth: auth,
+    }, (err, labelData) => {
+        if (err) {
+            return res
+                .status(err.code || 400)
+                .json({
+                    message: 'Error while fetching list detail.',
+                    error: err
+                });
+        }
+
+        res.json({
+            message: 'List detail fetched successfully!',
+            data: labelData
+        });
+    });
 }
 
 function getMessageDetail(messageID, auth) {
@@ -170,7 +214,6 @@ function getMessageDetail(messageID, auth) {
         gmail.users.messages.get({
             id: messageID,
             userId: 'me',
-            labelIds: 'INBOX',
             auth: auth,
         }, (err, message) => {
             if (err) {
