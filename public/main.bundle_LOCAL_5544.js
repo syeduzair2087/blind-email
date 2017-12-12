@@ -109,33 +109,14 @@ var EmailService = (function () {
     EmailService.prototype.apiUrl = function (endpoint) {
         return "http://127.0.0.1:3000/api/v1/" + endpoint;
     };
-<<<<<<< HEAD
     EmailService.prototype.fetchEmail = function () {
         return this.http.post(this.apiUrl('email/get'), {}, {
-=======
-    EmailService.prototype.fetchEmail = function (pageToken) {
-        return this.http.post(this.apiUrl('email/get'), pageToken ? {
-            pageToken: pageToken
-        } : {}, {
->>>>>>> 8dc28f9c7fc799cea422cb0bb07c7186270465a4
             withCredentials: true
         }).map(function (response) { return response.json(); });
     };
     EmailService.prototype.decodeEmail = function (encodedEmail) {
         return (new __WEBPACK_IMPORTED_MODULE_2_buffer__["Buffer"](encodedEmail, 'base64')).toString();
     };
-<<<<<<< HEAD
-=======
-    EmailService.prototype.sendEmail = function (emailAddress, subject, body) {
-        return this.http.post(this.apiUrl('email/send'), {
-            receiverEmail: emailAddress,
-            mailSubject: subject,
-            mailBody: body
-        }, {
-            withCredentials: true
-        }).map(function (response) { return response.json(); });
-    };
->>>>>>> 8dc28f9c7fc799cea422cb0bb07c7186270465a4
     return EmailService;
 }());
 EmailService = __decorate([
@@ -246,12 +227,6 @@ var ShellComponent = (function () {
     }
     ShellComponent.prototype.emailMenuInput = function (emails) {
         var _this = this;
-<<<<<<< HEAD
-=======
-        console.log('==========================================');
-        console.log(emails);
-        console.log('==========================================');
->>>>>>> 8dc28f9c7fc799cea422cb0bb07c7186270465a4
         this.toggleListen(true);
         this.voiceService.listen()
             .then(function (result) {
@@ -289,22 +264,6 @@ var ShellComponent = (function () {
                     });
                 })();
             }
-<<<<<<< HEAD
-=======
-            else if (_this.voiceService.keywordMatch(result, 'more')) {
-                return (function () {
-                    _this.toggleSpeak(true);
-                    _this.voiceService.speak('Fetching more emails.', 'female', null, function () {
-                        _this.toggleSpeak(false);
-                        _this.emailService.fetchEmail(emails.nextPageToken)
-                            .subscribe(function (result) {
-                            console.log(result);
-                            _this.emailMenu(result.data);
-                        });
-                    });
-                })();
-            }
->>>>>>> 8dc28f9c7fc799cea422cb0bb07c7186270465a4
             else {
                 _this.toggleSpeak(true);
                 _this.voiceService.speak('Sorry, i was not able to get that, please try again!', 'female', null, function () {
@@ -344,22 +303,14 @@ var ShellComponent = (function () {
                 });
             }
             else if (_this.voiceService.keywordMatch(result, 'repeat')) {
-<<<<<<< HEAD
                 _this.playMenu();
                 return;
-=======
-                return _this.playMenu();
->>>>>>> 8dc28f9c7fc799cea422cb0bb07c7186270465a4
             }
             else if (_this.voiceService.keywordMatch(result, 'fetchMail')) {
                 _this.toggleSpeak(true);
                 _this.voiceService.speak('Fetching emails. Please wait.', 'female', null, function () {
                     _this.toggleSpeak(false);
-<<<<<<< HEAD
                     _this.emailService.fetchEmail()
-=======
-                    return _this.emailService.fetchEmail()
->>>>>>> 8dc28f9c7fc799cea422cb0bb07c7186270465a4
                         .subscribe(function (result) {
                         console.log(result);
                         _this.emailMenu(result.data);
@@ -367,12 +318,6 @@ var ShellComponent = (function () {
                 });
                 return;
             }
-<<<<<<< HEAD
-=======
-            else if (_this.voiceService.keywordMatch(result, 'send')) {
-                _this.inputEmailAddress();
-            }
->>>>>>> 8dc28f9c7fc799cea422cb0bb07c7186270465a4
             else {
                 _this.toggleSpeak(true);
                 _this.voiceService.speak('Sorry, i was not able to get that. Please try again!', 'female', null, function () {
@@ -396,121 +341,6 @@ var ShellComponent = (function () {
             _this.voiceInput();
         });
     };
-<<<<<<< HEAD
-=======
-    ShellComponent.prototype.inputEmailAddress = function () {
-        var _this = this;
-        this.toggleSpeak(true);
-        this.voiceService.speak('Please speak the email address of the recipient.', 'female', null, function () {
-            _this.toggleSpeak(false);
-            _this.toggleListen(true);
-            _this.voiceService.listen()
-                .then(function (emailAddress) {
-                _this.toggleListen(false);
-                var _emailAddress = emailAddress.replace(/\s+/g, '').toLocaleLowerCase();
-                console.log(_emailAddress);
-                var emailRegex = /\S+@\S+\.\S+/;
-                if (!emailRegex.test(_emailAddress)) {
-                    return (function () {
-                        _this.toggleSpeak(true);
-                        _this.voiceService.speak('Sorry, please provide a valid email address.', 'female', null, function () {
-                            _this.toggleSpeak(false);
-                            _this.inputEmailAddress();
-                        });
-                    })();
-                }
-                else {
-                    _this.inputEmailSubject(_emailAddress);
-                }
-            });
-        });
-    };
-    ShellComponent.prototype.inputEmailSubject = function (emailAddress) {
-        var _this = this;
-        this.toggleSpeak(true);
-        this.voiceService.speak('Please speak the subject of the email.', 'female', null, function () {
-            _this.toggleSpeak(false);
-            _this.voiceService.listen()
-                .then(function (subject) {
-                console.log(subject);
-                if (subject.trim() === '') {
-                    return (function () {
-                        _this.toggleSpeak(true);
-                        _this.voiceService.speak('Sorry, please provide a valid subject.', 'female', null, function () {
-                            _this.toggleSpeak(false);
-                            _this.inputEmailSubject(emailAddress);
-                        });
-                    })();
-                }
-                else {
-                    _this.inputEmailBody(emailAddress, subject);
-                }
-            });
-        });
-    };
-    ShellComponent.prototype.inputEmailBody = function (emailAddress, subject) {
-        var _this = this;
-        this.toggleSpeak(true);
-        this.voiceService.speak('Please speak the message.', 'female', null, function () {
-            _this.toggleSpeak(false);
-            _this.voiceService.listen()
-                .then(function (message) {
-                console.log(message);
-                if (message.trim() === '') {
-                    return (function () {
-                        _this.toggleSpeak(true);
-                        _this.voiceService.speak('Sorry, please provide a email body.', 'female', null, function () {
-                            _this.toggleSpeak(false);
-                            _this.inputEmailBody(emailAddress, subject);
-                        });
-                    })();
-                }
-                else {
-                    _this.sendEmail(emailAddress, subject, message);
-                }
-            });
-        });
-    };
-    ShellComponent.prototype.sendEmail = function (emailAddress, subject, body) {
-        var _this = this;
-        var mail = {
-            emailAddress: emailAddress, subject: subject, body: body
-        };
-        console.log(mail);
-        this.toggleSpeak(true);
-        this.voiceService.speak('Are you sure you want to send the email?', 'female', null, function () {
-            _this.toggleSpeak(false);
-            _this.toggleListen(true);
-            _this.voiceService.listen()
-                .then(function (result) {
-                _this.toggleListen(false);
-                if (_this.voiceService.keywordMatch(result, 'yes')) {
-                    console.log('yes');
-                    return (function () {
-                        _this.emailService.sendEmail(emailAddress, subject, body)
-                            .subscribe(function (result) {
-                            console.log(result);
-                            _this.toggleSpeak(true);
-                            _this.voiceService.speak('Your email has been sent successfully!', 'female', null, function () {
-                                _this.toggleSpeak(false);
-                                _this.playMenu();
-                            });
-                        });
-                    })();
-                }
-                else if (_this.voiceService.keywordMatch(result, 'no')) {
-                }
-                else {
-                    return (function () {
-                        _this.voiceService.speak('Sorry i was not able to get that, please try again!', 'female', null, function () {
-                            _this.sendEmail(emailAddress, subject, body);
-                        });
-                    })();
-                }
-            });
-        });
-    };
->>>>>>> 8dc28f9c7fc799cea422cb0bb07c7186270465a4
     ShellComponent.prototype.ngOnInit = function () {
         this.playIntro();
     };
@@ -894,8 +724,6 @@ ShellModule = __decorate([
 
 /***/ 267:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
-<<<<<<< HEAD
-=======
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return environment; });
@@ -908,140 +736,6 @@ var environment = {
 
 /***/ 32:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(5);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return VoiceService; });
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-
-var VoiceService = (function () {
-    function VoiceService() {
-        this.voiceKeywords = {
-            login: [
-                'login', 'sign in', 'authenticate'
-            ],
-            logout: [
-                'logout', 'log out', 'sign out'
-            ],
-            repeat: [
-                'repeat', 'repeat menu'
-            ],
-            fetchMail: [
-                'fetch email', 'fetch mail', 'check email', 'check mail', 'get mail', 'get email', 'email'
-            ],
-            number: [
-                '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'
-            ],
-            return: [
-                'return', 'back', 'go back'
-            ],
-            more: [
-                'more', 'more email', 'more mail', 'fetch more'
-            ],
-            send: [
-                'send', 'send mail', 'send email', 'send message', 'write', 'write email', 'write mail'
-            ],
-            yes: [
-                'yes', 'sure', 'confirm', 'positive'
-            ],
-            no: [
-                'no', 'negative'
-            ]
-        };
-    }
-    VoiceService.prototype.keywordMatch = function (input, key) {
-        return this.voiceKeywords[key].includes(input);
-    };
-    // getNumberIndex(number: string) {
-    //   return this.voiceKeywords.number.indexOf(number);
-    // }
-    VoiceService.prototype.speak = function (text, voice, onload, onend) {
-        if (voice === void 0) { voice = 'female'; }
-        var msg = new SpeechSynthesisUtterance(text);
-        msg.rate = 1.1;
-        msg.pitch = 1.2;
-        // let voiceInterval = setInterval(() => {
-        // let voices = window.speechSynthesis.getVoices();
-        // if (voices.length) {
-        // if (onload) {
-        //   console.log('fn onload', onload);
-        //   onload();
-        // }
-        // clearInterval(voiceInterval);
-        // let msg = new SpeechSynthesisUtterance(text);
-        // voice == 'male' ? msg.voice = voices[50] : msg.voice = voices[49];
-        if (onend) {
-            console.log('fn onend', onend);
-            msg.onend = onend;
-        }
-        // console.log(msg.onend);
-        // msg.rate = 2.0;
-        window.speechSynthesis.speak(msg);
-        // }
-        // }, 250)
-    };
-    VoiceService.prototype.beep = function () {
-        var beep = new Audio();
-        beep.src = './assets/beep.mp3';
-        beep.load();
-        beep.play();
-    };
-    VoiceService.prototype.listen = function () {
-        this.beep();
-        return new Promise(function (resolve, reject) {
-            var input = '';
-            var rec = new webkitSpeechRecognition();
-            rec.onstart = function () {
-                console.log('Listening...');
-            };
-            rec.onresult = function (e) {
-                console.log('Found result');
-                console.log(e);
-                input = e.results[0][0].transcript;
-            };
-            rec.onend = function (e) {
-                console.log('Listening end');
-                console.log(e);
-                resolve(input);
-            };
-            rec.start();
-        });
-    };
-    VoiceService.prototype.cancelVoice = function () {
-        if (window.speechSynthesis.speaking)
-            window.speechSynthesis.cancel();
-    };
-    return VoiceService;
-}());
-VoiceService = __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["c" /* Injectable */])(),
-    __metadata("design:paramtypes", [])
-], VoiceService);
->>>>>>> 8dc28f9c7fc799cea422cb0bb07c7186270465a4
-
-//# sourceMappingURL=voice.service.js.map
-
-/***/ }),
-
-<<<<<<< HEAD
-/***/ 32:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-=======
-/***/ 324:
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(21)(false);
-// imports
-
->>>>>>> 8dc28f9c7fc799cea422cb0bb07c7186270465a4
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(5);
@@ -1302,15 +996,9 @@ var _a;
 
 /***/ 625:
 /***/ (function(module, exports, __webpack_require__) {
-<<<<<<< HEAD
 
 module.exports = __webpack_require__(249);
 
-=======
-
-module.exports = __webpack_require__(249);
-
->>>>>>> 8dc28f9c7fc799cea422cb0bb07c7186270465a4
 
 /***/ })
 

@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 
 // var index = require('./routes/index');
 var email = require('./routes/email');
+var entertainment = require('./routes/entertainment');
 
 var app = express();
 app.use((req, res, next) => {
@@ -30,6 +31,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // app.use('/', index);
 app.use('/api/v1/email', email);
+app.use('/api', entertainment);
 app.get('*', (req, res, next) => {
   res.sendFile(path.join(__dirname, '/public/index.html'))
 })
