@@ -37,6 +37,9 @@ export class VoiceService {
     ],
     magazine: [
       'read magazine', 'magazine'
+    ],
+    song: [
+      'song', 'play song', 'sing', 'sing a song', 'play', 'music', 'play music'
     ]
   }
 

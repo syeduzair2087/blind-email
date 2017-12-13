@@ -37,7 +37,10 @@ exports.getSong = (req, res) => {
         let songPath = path.join(__dirname, '../song/' + req.query.songName + '.mp3');
         fs.exists(songPath, (exists) => {
             if (exists) {
-                fs.createReadStream(songPath).pipe(res);
+                res
+                    .status(200)
+                    .sendFile(songPath);
+                // fs.createReadStream(songPath).pipe(res);
             }
             else {
                 res

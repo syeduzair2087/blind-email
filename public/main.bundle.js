@@ -189,6 +189,31 @@ var EntertainmentService = (function () {
         return this.http.get(this.apiUrl('entertainment/getPdfText'), { params: params })
             .map(function (response) { return response.json(); });
     };
+    EntertainmentService.prototype.fetchSongUrl = function (index) {
+        var title;
+        switch (index) {
+            case 1:
+                title = 'ManAamadeh';
+                break;
+            case 2:
+                title = 'ManAamadeh';
+                break;
+            case 3:
+                title = 'ManAamadeh';
+                break;
+            case 4:
+                title = 'ManAamadeh';
+                break;
+            case 5:
+                title = 'ManAamadeh';
+                break;
+        }
+        var params = new __WEBPACK_IMPORTED_MODULE_0__angular_http__["b" /* URLSearchParams */]();
+        params.append('songName', title);
+        return this.apiUrl('entertainment/getSong?songName=' + title);
+        // return this.http.get(this.apiUrl('entertainment/getSong'), { params })
+        // .map(response => response.json())
+    };
     return EntertainmentService;
 }());
 EntertainmentService = __decorate([
@@ -267,12 +292,14 @@ var _a, _b, _c, _d;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__services_voice_service__ = __webpack_require__(32);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_app_services_auth_service__ = __webpack_require__(50);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_router__ = __webpack_require__(72);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_app_services_email_service__ = __webpack_require__(117);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_app_services_entertainment_service__ = __webpack_require__(118);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_rxjs_Rx__ = __webpack_require__(342);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_rxjs_Rx___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_rxjs_Rx__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_voice_service__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_core__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_app_services_auth_service__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_router__ = __webpack_require__(72);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_app_services_email_service__ = __webpack_require__(117);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_app_services_entertainment_service__ = __webpack_require__(118);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ShellComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -283,6 +310,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
 
 
 
@@ -425,6 +453,64 @@ var ShellComponent = (function () {
             return _this.magazineInput();
         });
     };
+    ShellComponent.prototype.songInput = function () {
+        var _this = this;
+        this.toggleListen(true);
+        this.voiceService.listen()
+            .then(function (result) {
+            _this.toggleListen(false);
+            if (result.split(' ').length !== 1)
+                result = result.match(/\d+/).join('');
+            console.log('result', result);
+            if (_this.voiceService.keywordMatch(result, 'number') && parseInt(result) >= 1 && parseInt(result) <= 5) {
+                _this.toggleSpeak(true);
+                _this.voiceService.speak('Playing song. Please wait.', 'female', null, function () {
+                    _this.toggleSpeak(false);
+                    var music = new Audio(_this.entertainmentService.fetchSongUrl(parseInt(result)));
+                    console.log(music);
+                    music.play();
+                    var endEvent = function () {
+                        _this.toggleSpeak(true);
+                        _this.voiceService.speak('I have finished playing the song. Select another number, or speak return, to return to the previous menu.', 'female', null, function () {
+                            _this.toggleSpeak(false);
+                            return _this.songInput();
+                        });
+                    };
+                    var pauseEvent = __WEBPACK_IMPORTED_MODULE_0_rxjs_Rx__["Observable"].fromEvent(document.getElementsByTagName('body'), 'keyup')
+                        .filter(function ($event) { return $event['key'] == 'w'; })
+                        .first()
+                        .subscribe(function ($event) {
+                        console.log('paused');
+                        music.pause();
+                        music.currentTime = 0;
+                        music.src = '';
+                        endEvent();
+                    });
+                    music.onended = endEvent;
+                });
+            }
+            else if (_this.voiceService.keywordMatch(result, 'return')) {
+                _this.voiceService.speak('Returning to previous menu.', 'female', null, function () {
+                    return _this.playMenu();
+                });
+            }
+            else {
+                _this.toggleSpeak(true);
+                _this.voiceService.speak('Sorry, i was not able to get that. Please try again!', 'female', null, function () {
+                    _this.toggleSpeak(false);
+                    return _this.songInput();
+                });
+            }
+        });
+    };
+    ShellComponent.prototype.songMenu = function () {
+        var _this = this;
+        this.toggleSpeak(true);
+        this.voiceService.speak('Please speak a number between 1 to 5, to fetch and play a song. Or return, to return to the previous menu', 'female', null, function () {
+            _this.toggleSpeak(false);
+            return _this.songInput();
+        });
+    };
     ShellComponent.prototype.voiceInput = function () {
         var _this = this;
         this.toggleListen(true);
@@ -463,6 +549,9 @@ var ShellComponent = (function () {
             else if (_this.voiceService.keywordMatch(result, 'magazine')) {
                 _this.magazineMenu();
             }
+            else if (_this.voiceService.keywordMatch(result, 'song')) {
+                _this.songMenu();
+            }
             else {
                 _this.toggleSpeak(true);
                 _this.voiceService.speak('Sorry, i was not able to get that. Please try again!', 'female', null, function () {
@@ -479,7 +568,7 @@ var ShellComponent = (function () {
     };
     ShellComponent.prototype.playMenu = function () {
         var _this = this;
-        var menu = 'Check mail, to check your email. Send mail, to send email. Read magazine, to read a magazine. Logout, to logout of the system. Or repeat, to repeat the menu.';
+        var menu = 'Check mail, to check your email. Send mail, to send email. Read magazine, to read a magazine. Play song, to play a song. Logout, to logout of the system. Or repeat, to repeat the menu.';
         this.toggleSpeak(true);
         this.voiceService.speak(menu, 'female', null, function () {
             _this.toggleSpeak(false);
@@ -614,12 +703,12 @@ var ShellComponent = (function () {
     return ShellComponent;
 }());
 ShellComponent = __decorate([
-    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__angular_core__["_11" /* Component */])({
+    __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__angular_core__["_11" /* Component */])({
         selector: 'app-shell',
         template: __webpack_require__(340),
         styles: [__webpack_require__(328)]
     }),
-    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_0__services_voice_service__["a" /* VoiceService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__services_voice_service__["a" /* VoiceService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2_app_services_auth_service__["a" /* AuthService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2_app_services_auth_service__["a" /* AuthService */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_3__angular_router__["a" /* Router */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__angular_router__["a" /* Router */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_4_app_services_email_service__["a" /* EmailService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4_app_services_email_service__["a" /* EmailService */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_1__angular_core__["q" /* ChangeDetectorRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_core__["q" /* ChangeDetectorRef */]) === "function" && _e || Object, typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_5_app_services_entertainment_service__["a" /* EntertainmentService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5_app_services_entertainment_service__["a" /* EntertainmentService */]) === "function" && _f || Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__services_voice_service__["a" /* VoiceService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__services_voice_service__["a" /* VoiceService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_3_app_services_auth_service__["a" /* AuthService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3_app_services_auth_service__["a" /* AuthService */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_4__angular_router__["a" /* Router */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__angular_router__["a" /* Router */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_5_app_services_email_service__["a" /* EmailService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5_app_services_email_service__["a" /* EmailService */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_2__angular_core__["q" /* ChangeDetectorRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_core__["q" /* ChangeDetectorRef */]) === "function" && _e || Object, typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_6_app_services_entertainment_service__["a" /* EntertainmentService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_6_app_services_entertainment_service__["a" /* EntertainmentService */]) === "function" && _f || Object])
 ], ShellComponent);
 
 var _a, _b, _c, _d, _e, _f;
@@ -1045,6 +1134,9 @@ var VoiceService = (function () {
             ],
             magazine: [
                 'read magazine', 'magazine'
+            ],
+            song: [
+                'song', 'play song', 'sing', 'sing a song', 'play', 'music', 'play music'
             ]
         };
     }

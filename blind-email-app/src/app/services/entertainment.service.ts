@@ -37,4 +37,34 @@ export class EntertainmentService {
       .map(response => response.json())
   }
 
+  fetchSongUrl(index: number) {
+    let title: string;
+
+    switch (index) {
+      case 1:
+        title = 'ManAamadeh';
+        break;
+      case 2:
+        title = 'ManAamadeh';
+        break;
+      case 3:
+        title = 'ManAamadeh';
+        break;
+      case 4:
+        title = 'ManAamadeh';
+        break;
+      case 5:
+        title = 'ManAamadeh';
+        break;
+    }
+
+    let params = new URLSearchParams();
+    params.append('songName', title);
+
+    return this.apiUrl('entertainment/getSong?songName=' + title);
+
+    // return this.http.get(this.apiUrl('entertainment/getSong'), { params })
+      // .map(response => response.json())
+  }
+
 }

@@ -135,6 +135,65 @@ export class ShellComponent implements OnInit {
     })
   }
 
+  songInput() {
+    this.toggleListen(true);
+    this.voiceService.listen()
+      .then((result: string) => {
+        this.toggleListen(false);
+        if (result.split(' ').length !== 1)
+          result = result.match(/\d+/).join('');
+        console.log('result', result);
+        if (this.voiceService.keywordMatch(result, 'number') && parseInt(result) >= 1 && parseInt(result) <= 5) {
+          this.toggleSpeak(true);
+          this.voiceService.speak('Playing song. Please wait.', 'female', null, () => {
+            this.toggleSpeak(false);
+            let music = new Audio(this.entertainmentService.fetchSongUrl(parseInt(result)));
+            console.log(music);
+            music.play();
+
+            let endEvent = () => {
+              this.toggleSpeak(true);
+              this.voiceService.speak('I have finished playing the song. Select another number, or speak return, to return to the previous menu.', 'female', null, () => {
+                this.toggleSpeak(false);
+                return this.songInput();
+              })
+            }
+
+            let pauseEvent = Observable.fromEvent(document.getElementsByTagName('body'), 'keyup')
+              .filter($event => $event['key'] == 'w')
+              .first()
+              .subscribe($event => {
+                console.log('paused');
+                music.pause();
+                music.currentTime = 0;
+                music.src = '';
+                endEvent();
+              });
+
+            music.onended = endEvent;
+          })
+        } else if (this.voiceService.keywordMatch(result, 'return')) {
+          this.voiceService.speak('Returning to previous menu.', 'female', null, () => {
+            return this.playMenu();
+          })
+        } else {
+          this.toggleSpeak(true);
+          this.voiceService.speak('Sorry, i was not able to get that. Please try again!', 'female', null, () => {
+            this.toggleSpeak(false);
+            return this.songInput();
+          })
+        }
+      })
+  }
+
+  songMenu() {
+    this.toggleSpeak(true);
+    this.voiceService.speak('Please speak a number between 1 to 5, to fetch and play a song. Or return, to return to the previous menu', 'female', null, () => {
+      this.toggleSpeak(false);
+      return this.songInput();
+    })
+  }
+
   voiceInput() {
     this.toggleListen(true);
     this.voiceService.listen()
@@ -167,6 +226,8 @@ export class ShellComponent implements OnInit {
           this.inputEmailAddress();
         } else if (this.voiceService.keywordMatch(result, 'magazine')) {
           this.magazineMenu();
+        } else if (this.voiceService.keywordMatch(result, 'song')) {
+          this.songMenu();
         } else {
           this.toggleSpeak(true);
           this.voiceService.speak('Sorry, i was not able to get that. Please try again!', 'female', null, () => {
@@ -184,7 +245,7 @@ export class ShellComponent implements OnInit {
   }
 
   playMenu() {
-    let menu = 'Check mail, to check your email. Send mail, to send email. Read magazine, to read a magazine. Logout, to logout of the system. Or repeat, to repeat the menu.'
+    let menu = 'Check mail, to check your email. Send mail, to send email. Read magazine, to read a magazine. Play song, to play a song. Logout, to logout of the system. Or repeat, to repeat the menu.'
     this.toggleSpeak(true);
     this.voiceService.speak(menu, 'female', null, () => {
       this.toggleSpeak(false);
