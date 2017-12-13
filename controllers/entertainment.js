@@ -31,3 +31,30 @@ exports.getPdfText = (req, res, next) => {
     }
 
 }
+
+exports.getSong = (req, res) => {
+    if (req.query.songName) {
+        let songPath = path.join(__dirname, '../song/' + req.query.songName + '.mp3');
+        fs.exists(songPath, (exists) => {
+            if (exists) {
+                fs.createReadStream(songPath).pipe(res);
+            }
+            else {
+                res
+                    .status(404)
+                    .json({
+                        message: 'Song not found...'
+                    })
+                    .end();
+            }
+        })
+    }
+    else {
+        res
+            .status(500)
+            .send({
+                message: 'Song name not found...'
+            })
+            .end();
+    }
+}
