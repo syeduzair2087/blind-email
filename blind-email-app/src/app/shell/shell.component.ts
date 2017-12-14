@@ -1,9 +1,11 @@
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { Observable } from 'rxjs/Rx';
 import { VoiceService } from './../services/voice.service';
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { AuthService } from 'app/services/auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { EmailService } from 'app/services/email.service';
+import { EntertainmentService } from 'app/services/entertainment.service';
 
 @Component({
   selector: 'app-shell',
@@ -15,10 +17,15 @@ export class ShellComponent implements OnInit {
   listening: boolean = false;
 
   emailMenuInput(emails) {
+    // console.log('==========================================')
+    // console.log(emails)
+    // console.log('==========================================')
     this.toggleListen(true);
     this.voiceService.listen()
       .then((result: string) => {
         this.toggleListen(false);
+        if (result.split(' ').length !== 1)
+          result = result.match(/\d+/).join('');
         console.log(result);
         if (this.voiceService.keywordMatch(result, 'number')) {
           if ('parts' in emails.messages[parseInt(result) - 1].payload) {
@@ -49,6 +56,18 @@ export class ShellComponent implements OnInit {
               this.playMenu()
             });
           })()
+        } else if (this.voiceService.keywordMatch(result, 'more')) {
+          return (() => {
+            this.toggleSpeak(true);
+            this.voiceService.speak('Fetching more emails.', 'female', null, () => {
+              this.toggleSpeak(false);
+              this.emailService.fetchEmail(emails.nextPageToken)
+                .subscribe((result: any) => {
+                  console.log(result);
+                  this.emailMenu(result.data);
+                })
+            });
+          })()
         } else {
           this.toggleSpeak(true);
           this.voiceService.speak('Sorry, i was not able to get that, please try again!', 'female', null, () => {
@@ -71,6 +90,110 @@ export class ShellComponent implements OnInit {
     })
   }
 
+  magazineInput() {
+    this.toggleListen(true);
+    this.voiceService.listen()
+      .then((result: string) => {
+        this.toggleListen(false);
+        if (result.split(' ').length !== 1)
+          result = result.match(/\d+/).join('');
+        console.log('result', result);
+        if (this.voiceService.keywordMatch(result, 'number') && parseInt(result) >= 1 && parseInt(result) <= 5) {
+          this.toggleSpeak(true);
+          this.voiceService.speak('Fetching magazine. Please wait.', 'female', null, () => {
+            this.toggleSpeak(false);
+            this.entertainmentService.fetchPdf(parseInt(result))
+              .subscribe(pdf => {
+                this.toggleSpeak(true);
+                this.voiceService.speak(pdf.data, 'female', null, () => {
+                  this.voiceService.speak('I have finished reading the magazine. Select another number, or speak return, to return to the previous menu.', 'female', null, () => {
+                    this.toggleSpeak(false);
+                    return this.magazineInput();
+                  })
+                })
+              })
+          })
+        } else if (this.voiceService.keywordMatch(result, 'return')) {
+          this.voiceService.speak('Returning to previous menu.', 'female', null, () => {
+            return this.playMenu();
+          })
+        } else {
+          this.toggleSpeak(true);
+          this.voiceService.speak('Sorry, i was not able to get that. Please try again!', 'female', null, () => {
+            this.toggleSpeak(false);
+            return this.magazineInput();
+          })
+        }
+      })
+  }
+
+  magazineMenu() {
+    this.toggleSpeak(true);
+    this.voiceService.speak('Please speak a number between 1 to 5, to fetch and read a magazine. Or return, to return to the previous menu', 'female', null, () => {
+      this.toggleSpeak(false);
+      return this.magazineInput();
+    })
+  }
+
+  songInput() {
+    this.toggleListen(true);
+    this.voiceService.listen()
+      .then((result: string) => {
+        this.toggleListen(false);
+        if (result.split(' ').length !== 1)
+          result = result.match(/\d+/).join('');
+        console.log('result', result);
+        if (this.voiceService.keywordMatch(result, 'number') && parseInt(result) >= 1 && parseInt(result) <= 5) {
+          this.toggleSpeak(true);
+          this.voiceService.speak('Playing song. Please wait.', 'female', null, () => {
+            this.toggleSpeak(false);
+            let music = new Audio(this.entertainmentService.fetchSongUrl(parseInt(result)));
+            console.log(music);
+            music.play();
+
+            let endEvent = () => {
+              this.toggleSpeak(true);
+              this.voiceService.speak('I have finished playing the song. Select another number, or speak return, to return to the previous menu.', 'female', null, () => {
+                this.toggleSpeak(false);
+                return this.songInput();
+              })
+            }
+
+            let pauseEvent = Observable.fromEvent(document.getElementsByTagName('body'), 'keyup')
+              .filter($event => $event['key'] == 'w')
+              .first()
+              .subscribe($event => {
+                console.log('paused');
+                music.pause();
+                music.currentTime = 0;
+                music.src = '';
+                endEvent();
+              });
+
+            music.onended = endEvent;
+          })
+        } else if (this.voiceService.keywordMatch(result, 'return')) {
+          this.voiceService.speak('Returning to previous menu.', 'female', null, () => {
+            return this.playMenu();
+          })
+        } else {
+          this.toggleSpeak(true);
+          this.voiceService.speak('Sorry, i was not able to get that. Please try again!', 'female', null, () => {
+            this.toggleSpeak(false);
+            return this.songInput();
+          })
+        }
+      })
+  }
+
+  songMenu() {
+    this.toggleSpeak(true);
+    this.voiceService.speak('Please speak a number between 1 to 5, to fetch and play a song. Or return, to return to the previous menu', 'female', null, () => {
+      this.toggleSpeak(false);
+      return this.songInput();
+    })
+  }
+
   voiceInput() {
     this.toggleListen(true);
     this.voiceService.listen()
@@ -87,19 +210,24 @@ export class ShellComponent implements OnInit {
             });
           });
         } else if (this.voiceService.keywordMatch(result, 'repeat')) {
-          this.playMenu();
-          return;
+          return this.playMenu();
         } else if (this.voiceService.keywordMatch(result, 'fetchMail')) {
           this.toggleSpeak(true);
           this.voiceService.speak('Fetching emails. Please wait.', 'female', null, () => {
             this.toggleSpeak(false);
-            this.emailService.fetchEmail()
+            return this.emailService.fetchEmail()
               .subscribe((result: any) => {
                 console.log(result);
                 this.emailMenu(result.data);
               })
           })
           return;
+        } else if (this.voiceService.keywordMatch(result, 'send')) {
+          this.inputEmailAddress();
+        } else if (this.voiceService.keywordMatch(result, 'magazine')) {
+          this.magazineMenu();
+        } else if (this.voiceService.keywordMatch(result, 'song')) {
+          this.songMenu();
         } else {
           this.toggleSpeak(true);
           this.voiceService.speak('Sorry, i was not able to get that. Please try again!', 'female', null, () => {
@@ -117,7 +245,7 @@ export class ShellComponent implements OnInit {
   }
 
   playMenu() {
-    let menu = 'Check mail, to check your email. Send mail, to send email. Logout, to logout of the system. Or repeat, to repeat the menu.'
+    let menu = 'Check mail, to check your email. Send mail, to send email. Read magazine, to read a magazine. Play song, to play a song. Logout, to logout of the system. Or repeat, to repeat the menu.'
     this.toggleSpeak(true);
     this.voiceService.speak(menu, 'female', null, () => {
       this.toggleSpeak(false);
@@ -125,7 +253,115 @@ export class ShellComponent implements OnInit {
     })
   }
 
-  constructor(private voiceService: VoiceService, private authService: AuthService, private router: Router, private emailService: EmailService, private changeDetector: ChangeDetectorRef) { }
+  inputEmailAddress() {
+    this.toggleSpeak(true);
+    this.voiceService.speak('Please speak the email address of the recipient.', 'female', null, () => {
+      this.toggleSpeak(false);
+      this.toggleListen(true);
+      this.voiceService.listen()
+        .then((emailAddress: string) => {
+          this.toggleListen(false);
+          let _emailAddress = emailAddress.replace(/\s+/g, '').toLocaleLowerCase();
+          console.log(_emailAddress);
+          let emailRegex = /\S+@\S+\.\S+/;
+          if (!emailRegex.test(_emailAddress)) {
+            return (() => {
+              this.toggleSpeak(true);
+              this.voiceService.speak('Sorry, please provide a valid email address.', 'female', null, () => {
+                this.toggleSpeak(false);
+                this.inputEmailAddress();
+              })
+            })()
+          } else {
+            this.inputEmailSubject(_emailAddress);
+          }
+        });
+    })
+  }
+
+  inputEmailSubject(emailAddress: string) {
+    this.toggleSpeak(true);
+    this.voiceService.speak('Please speak the subject of the email.', 'female', null, () => {
+      this.toggleSpeak(false);
+      this.voiceService.listen()
+        .then((subject: string) => {
+          console.log(subject);
+          if (subject.trim() === '') {
+            return (() => {
+              this.toggleSpeak(true);
+              this.voiceService.speak('Sorry, please provide a valid subject.', 'female', null, () => {
+                this.toggleSpeak(false);
+                this.inputEmailSubject(emailAddress);
+              })
+            })()
+          } else {
+            this.inputEmailBody(emailAddress, subject);
+          }
+        });
+    })
+  }
+
+  inputEmailBody(emailAddress, subject) {
+    this.toggleSpeak(true);
+    this.voiceService.speak('Please speak the message.', 'female', null, () => {
+      this.toggleSpeak(false);
+      this.voiceService.listen()
+        .then((message: string) => {
+          console.log(message)
+          if (message.trim() === '') {
+            return (() => {
+              this.toggleSpeak(true);
+              this.voiceService.speak('Sorry, please provide a email body.', 'female', null, () => {
+                this.toggleSpeak(false);
+                this.inputEmailBody(emailAddress, subject);
+              })
+            })()
+          } else {
+            this.sendEmail(emailAddress, subject, message);
+          }
+        });
+    })
+  }
+
+  sendEmail(emailAddress: string, subject: string, body: string) {
+    let mail = {
+      emailAddress, subject, body
+    };
+    console.log(mail);
+    this.toggleSpeak(true);
+    this.voiceService.speak('Are you sure you want to send the email?', 'female', null, () => {
+      this.toggleSpeak(false);
+      this.toggleListen(true);
+      this.voiceService.listen()
+        .then((result: string) => {
+          this.toggleListen(false);
+          if (this.voiceService.keywordMatch(result, 'yes')) {
+            console.log('yes');
+            return (() => {
+              this.emailService.sendEmail(emailAddress, subject, body)
+                .subscribe(result => {
+                  console.log(result);
+                  this.toggleSpeak(true);
+                  this.voiceService.speak('Your email has been sent successfully!', 'female', null, () => {
+                    this.toggleSpeak(false);
+                    this.playMenu();
+                  })
+                })
+            })()
+          } else if (this.voiceService.keywordMatch(result, 'no')) {
+
+          } else {
+            return (() => {
+              this.voiceService.speak('Sorry i was not able to get that, please try again!', 'female', null, () => {
+                this.sendEmail(emailAddress, subject, body);
+              })
+            })()
+          }
+        })
+    })
+  }
+
+  constructor(private voiceService: VoiceService, private authService: AuthService, private router: Router, private emailService: EmailService, private changeDetector: ChangeDetectorRef, private entertainmentService: EntertainmentService) { }
 
   ngOnInit() {
     this.playIntro();

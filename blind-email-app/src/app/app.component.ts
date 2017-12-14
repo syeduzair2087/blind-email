@@ -18,6 +18,5 @@ export class AppComponent {
       .subscribe($event => {
         this.voiceService.cancelVoice();
       });
-
   }
 }

@@ -12,4 +12,7 @@ router.post('/get', emailController.getMessageList);
 router.post('/send', emailController.sendMail);
 router.get('/logout', emailController.logout);
 
+router.get('/getLableList', emailController.getLableList);
+router.get('/getByLableId', emailController.getLableDetail);
+
 module.exports = router;
