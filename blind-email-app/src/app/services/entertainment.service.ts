@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 @Injectable()
 export class EntertainmentService {
   apiUrl(endpoint: string) {
-    return `http://127.0.0.1:3000/api/v1/${endpoint}`
+    return `https://blind-email.herokuapp.com/api/v1/${endpoint}`
   }
 
   constructor(private http: Http) { }
