@@ -9,10 +9,12 @@ import { LoginModule } from 'app/login/login.module';
 import { ShellModule } from 'app/shell/shell.module';
 import { LoginGuard, HomeGuard } from 'app/services/guard.service';
 import { CookieModule } from 'ngx-cookie';
+import { ErrorComponent } from './error/error.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    ErrorComponent
   ],
   imports: [
     BrowserModule,
