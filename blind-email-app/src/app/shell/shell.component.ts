@@ -17,17 +17,16 @@ export class ShellComponent implements OnInit {
   listening: boolean = false;
 
   emailMenuInput(emails) {
-    // console.log('==========================================')
-    // console.log(emails)
-    // console.log('==========================================')
     this.toggleListen(true);
     this.voiceService.listen()
       .then((result: string) => {
         this.toggleListen(false);
-        if (result.split(' ').length !== 1)
+        if (result.split(' ').length !== 1 && result.match(/\d+/))
           result = result.match(/\d+/).join('');
+
         console.log(result);
         if (this.voiceService.keywordMatch(result, 'number')) {
+          // alert('parts' in emails.messages[parseInt(result) - 1].payload);
           if ('parts' in emails.messages[parseInt(result) - 1].payload) {
             let mail = this.emailService.decodeEmail((emails.messages[parseInt(result) - 1]).payload.parts[0].body.data);
             this.toggleSpeak(true);
@@ -39,6 +38,7 @@ export class ShellComponent implements OnInit {
             });
           } else {
             let mail = this.emailService.decodeEmail((emails.messages[parseInt(result) - 1]).payload.body.data);
+            alert(mail);
             this.toggleSpeak(true);
             this.voiceService.speak(mail, 'female', null, () => {
               return this.voiceService.speak('I have finished reading your email. Please speak another number, or more, to fetch more emails', 'female', null, () => {
@@ -47,7 +47,7 @@ export class ShellComponent implements OnInit {
               });
             });
           }
-          console.log('Email', this.emailService.decodeEmail((emails.messages[parseInt(result) - 1]).payload.parts[0].body.data))
+          // console.log('Email', this.emailService.decodeEmail((emails.messages[parseInt(result) - 1]).payload.parts[0].body.data))
         } else if (this.voiceService.keywordMatch(result, 'return')) {
           return (() => {
             this.toggleSpeak(true);
@@ -56,7 +56,7 @@ export class ShellComponent implements OnInit {
               this.playMenu()
             });
           })()
-        } else if (this.voiceService.keywordMatch(result, 'more')) {
+        } else if (this.voiceService.keywordMatch(result, 'more') && emails.nextPageToken) {
           return (() => {
             this.toggleSpeak(true);
             this.voiceService.speak('Fetching more emails.', 'female', null, () => {
@@ -82,7 +82,7 @@ export class ShellComponent implements OnInit {
 
   emailMenu(emails) {
     this.toggleSpeak(true);
-    this.voiceService.speak('Your emails have been fetched. Please speak a number between 1 and 10, or more, to fetch more emails', 'female', null, () => {
+    this.voiceService.speak('Your emails have been fetched. Please speak a number between 1 and ' + (emails.messages.length) + '.' + (emails.nextPageToken ? 'Or more, to fetch more emails' : '') , 'female', null, () => {
       this.voiceService.speak('Speak return, to return to previous menu', 'female', null, () => {
         this.toggleSpeak(false);
         this.emailMenuInput(emails);
@@ -95,7 +95,7 @@ export class ShellComponent implements OnInit {
     this.voiceService.listen()
       .then((result: string) => {
         this.toggleListen(false);
-        if (result.split(' ').length !== 1)
+        if (result.split(' ').length !== 1 && result.match(/\d+/))
           result = result.match(/\d+/).join('');
         console.log('result', result);
         if (this.voiceService.keywordMatch(result, 'number') && parseInt(result) >= 1 && parseInt(result) <= 5) {
@@ -140,7 +140,7 @@ export class ShellComponent implements OnInit {
     this.voiceService.listen()
       .then((result: string) => {
         this.toggleListen(false);
-        if (result.split(' ').length !== 1)
+        if (result.split(' ').length !== 1 && result.match(/\d+/))
           result = result.match(/\d+/).join('');
         console.log('result', result);
         if (this.voiceService.keywordMatch(result, 'number') && parseInt(result) >= 1 && parseInt(result) <= 5) {
@@ -245,7 +245,7 @@ export class ShellComponent implements OnInit {
   }
 
   playMenu() {
-    let menu = 'Check mail, to check your email. Send mail, to send email. Read magazine, to read a magazine. Play song, to play a song. Logout, to logout of the system. Or repeat, to repeat the menu.'
+    let menu = 'Speak check mail, to check your email. Send mail, to send email. Read magazine, to read a magazine. Play song, to play a song. Logout, to logout of the system. Or repeat, to repeat the menu.'
     this.toggleSpeak(true);
     this.voiceService.speak(menu, 'female', null, () => {
       this.toggleSpeak(false);
@@ -305,13 +305,13 @@ export class ShellComponent implements OnInit {
     this.toggleSpeak(true);
     this.voiceService.speak('Please speak the message.', 'female', null, () => {
       this.toggleSpeak(false);
-      this.voiceService.listen()
+      this.voiceService.listen(true)
         .then((message: string) => {
           console.log(message)
           if (message.trim() === '') {
             return (() => {
               this.toggleSpeak(true);
-              this.voiceService.speak('Sorry, please provide a email body.', 'female', null, () => {
+              this.voiceService.speak('Sorry, please provide an email body.', 'female', null, () => {
                 this.toggleSpeak(false);
                 this.inputEmailBody(emailAddress, subject);
               })
@@ -349,7 +349,11 @@ export class ShellComponent implements OnInit {
                 })
             })()
           } else if (this.voiceService.keywordMatch(result, 'no')) {
-
+            this.toggleSpeak(true);
+            this.voiceService.speak('Discarding email and returning to previous menu.', 'female', null, () => {
+              this.toggleSpeak(false);
+              this.playMenu();
+            })
           } else {
             return (() => {
               this.voiceService.speak('Sorry i was not able to get that, please try again!', 'female', null, () => {
