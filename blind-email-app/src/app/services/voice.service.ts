@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
 declare var webkitSpeechRecognition: any;
 
 @Injectable()
@@ -33,7 +34,7 @@ export class VoiceService {
       'yes', 'sure', 'confirm', 'positive'
     ], 
     no: [
-      'no', 'negative'
+      'no', 'negative', 'not sure'
     ],
     magazine: [
       'read magazine', 'magazine'
@@ -94,11 +95,22 @@ export class VoiceService {
     beep.play();
   }
 
-  listen() {
+  listen(uninterrupted?: boolean) {
     this.beep();
     return new Promise((resolve, reject) => {
       let input: string = '';
       let rec = new webkitSpeechRecognition();
+
+      if(uninterrupted) {
+        rec.continuous = true;
+
+        Observable.fromEvent(document.getElementsByTagName('body'), 'keyup')
+        .filter($event => $event['key'] == 'w')
+        .first()
+        .subscribe($event => {
+          rec.stop();
+        });
+      }
 
       rec.onstart = () => {
         console.log('Listening...');

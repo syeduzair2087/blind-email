@@ -371,17 +371,15 @@ var ShellComponent = (function () {
     }
     ShellComponent.prototype.emailMenuInput = function (emails) {
         var _this = this;
-        // console.log('==========================================')
-        // console.log(emails)
-        // console.log('==========================================')
         this.toggleListen(true);
         this.voiceService.listen()
             .then(function (result) {
             _this.toggleListen(false);
-            if (result.split(' ').length !== 1)
+            if (result.split(' ').length !== 1 && result.match(/\d+/))
                 result = result.match(/\d+/).join('');
             console.log(result);
             if (_this.voiceService.keywordMatch(result, 'number')) {
+                // alert('parts' in emails.messages[parseInt(result) - 1].payload);
                 if ('parts' in emails.messages[parseInt(result) - 1].payload) {
                     var mail = _this.emailService.decodeEmail((emails.messages[parseInt(result) - 1]).payload.parts[0].body.data);
                     _this.toggleSpeak(true);
@@ -394,6 +392,7 @@ var ShellComponent = (function () {
                 }
                 else {
                     var mail = _this.emailService.decodeEmail((emails.messages[parseInt(result) - 1]).payload.body.data);
+                    alert(mail);
                     _this.toggleSpeak(true);
                     _this.voiceService.speak(mail, 'female', null, function () {
                         return _this.voiceService.speak('I have finished reading your email. Please speak another number, or more, to fetch more emails', 'female', null, function () {
@@ -402,7 +401,7 @@ var ShellComponent = (function () {
                         });
                     });
                 }
-                console.log('Email', _this.emailService.decodeEmail((emails.messages[parseInt(result) - 1]).payload.parts[0].body.data));
+                // console.log('Email', this.emailService.decodeEmail((emails.messages[parseInt(result) - 1]).payload.parts[0].body.data))
             }
             else if (_this.voiceService.keywordMatch(result, 'return')) {
                 return (function () {
@@ -413,7 +412,7 @@ var ShellComponent = (function () {
                     });
                 })();
             }
-            else if (_this.voiceService.keywordMatch(result, 'more')) {
+            else if (_this.voiceService.keywordMatch(result, 'more') && emails.nextPageToken) {
                 return (function () {
                     _this.toggleSpeak(true);
                     _this.voiceService.speak('Fetching more emails.', 'female', null, function () {
@@ -440,7 +439,7 @@ var ShellComponent = (function () {
     ShellComponent.prototype.emailMenu = function (emails) {
         var _this = this;
         this.toggleSpeak(true);
-        this.voiceService.speak('Your emails have been fetched. Please speak a number between 1 and 10, or more, to fetch more emails', 'female', null, function () {
+        this.voiceService.speak('Your emails have been fetched. Please speak a number between 1 and ' + (emails.messages.length) + '.' + (emails.nextPageToken ? 'Or more, to fetch more emails' : ''), 'female', null, function () {
             _this.voiceService.speak('Speak return, to return to previous menu', 'female', null, function () {
                 _this.toggleSpeak(false);
                 _this.emailMenuInput(emails);
@@ -453,7 +452,7 @@ var ShellComponent = (function () {
         this.voiceService.listen()
             .then(function (result) {
             _this.toggleListen(false);
-            if (result.split(' ').length !== 1)
+            if (result.split(' ').length !== 1 && result.match(/\d+/))
                 result = result.match(/\d+/).join('');
             console.log('result', result);
             if (_this.voiceService.keywordMatch(result, 'number') && parseInt(result) >= 1 && parseInt(result) <= 5) {
@@ -500,7 +499,7 @@ var ShellComponent = (function () {
         this.voiceService.listen()
             .then(function (result) {
             _this.toggleListen(false);
-            if (result.split(' ').length !== 1)
+            if (result.split(' ').length !== 1 && result.match(/\d+/))
                 result = result.match(/\d+/).join('');
             console.log('result', result);
             if (_this.voiceService.keywordMatch(result, 'number') && parseInt(result) >= 1 && parseInt(result) <= 5) {
@@ -609,7 +608,7 @@ var ShellComponent = (function () {
     };
     ShellComponent.prototype.playMenu = function () {
         var _this = this;
-        var menu = 'Check mail, to check your email. Send mail, to send email. Read magazine, to read a magazine. Play song, to play a song. Logout, to logout of the system. Or repeat, to repeat the menu.';
+        var menu = 'Speak check mail, to check your email. Send mail, to send email. Read magazine, to read a magazine. Play song, to play a song. Logout, to logout of the system. Or repeat, to repeat the menu.';
         this.toggleSpeak(true);
         this.voiceService.speak(menu, 'female', null, function () {
             _this.toggleSpeak(false);
@@ -671,13 +670,13 @@ var ShellComponent = (function () {
         this.toggleSpeak(true);
         this.voiceService.speak('Please speak the message.', 'female', null, function () {
             _this.toggleSpeak(false);
-            _this.voiceService.listen()
+            _this.voiceService.listen(true)
                 .then(function (message) {
                 console.log(message);
                 if (message.trim() === '') {
                     return (function () {
                         _this.toggleSpeak(true);
-                        _this.voiceService.speak('Sorry, please provide a email body.', 'female', null, function () {
+                        _this.voiceService.speak('Sorry, please provide an email body.', 'female', null, function () {
                             _this.toggleSpeak(false);
                             _this.inputEmailBody(emailAddress, subject);
                         });
@@ -717,6 +716,11 @@ var ShellComponent = (function () {
                     })();
                 }
                 else if (_this.voiceService.keywordMatch(result, 'no')) {
+                    _this.toggleSpeak(true);
+                    _this.voiceService.speak('Discarding email and returning to previous menu.', 'female', null, function () {
+                        _this.toggleSpeak(false);
+                        _this.playMenu();
+                    });
                 }
                 else {
                     return (function () {
@@ -1144,6 +1148,8 @@ var environment = {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_Observable__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_Observable___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_rxjs_Observable__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return VoiceService; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1154,6 +1160,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+
 
 var VoiceService = (function () {
     function VoiceService() {
@@ -1186,7 +1193,7 @@ var VoiceService = (function () {
                 'yes', 'sure', 'confirm', 'positive'
             ],
             no: [
-                'no', 'negative'
+                'no', 'negative', 'not sure'
             ],
             magazine: [
                 'read magazine', 'magazine'
@@ -1233,11 +1240,20 @@ var VoiceService = (function () {
         beep.load();
         beep.play();
     };
-    VoiceService.prototype.listen = function () {
+    VoiceService.prototype.listen = function (uninterrupted) {
         this.beep();
         return new Promise(function (resolve, reject) {
             var input = '';
             var rec = new webkitSpeechRecognition();
+            if (uninterrupted) {
+                rec.continuous = true;
+                __WEBPACK_IMPORTED_MODULE_1_rxjs_Observable__["Observable"].fromEvent(document.getElementsByTagName('body'), 'keyup')
+                    .filter(function ($event) { return $event['key'] == 'w'; })
+                    .first()
+                    .subscribe(function ($event) {
+                    rec.stop();
+                });
+            }
             rec.onstart = function () {
                 console.log('Listening...');
             };
