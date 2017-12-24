@@ -15,7 +15,26 @@ export class AppComponent {
 
   ngOnInit() {
     if(!window['webkitSpeechRecognition']) {
-      this.router.navigate(['error']);
+
+      navigator.mediaDevices.getUserMedia({audio: true})
+      .then(() => this.router.navigate(['error']))
+      .catch(error => {
+        console.log(error)
+       if(error.name ==='NO_DEVICES_FOUND')
+       this.router.navigate(['error', {error: 'Mic not found'}]); 
+       else
+       this.router.navigate(['error', {error: error.messsage}]); 
+
+      })
+
+      // navigator.getUserMedia({audio: true},()=> {
+      //   this.router.navigate(['error']);
+      // }, (error)=> {
+      //   console.log(error)
+      //   if (error.name === 'NO_DEVICES_FOUND') 
+      //   this.router.navigate(['error']);
+      // })
+      
       // this.voiceService.speak('Sorry, your browswer does not support speech recognition. The system will now exit.', 'female', null, (() => {
       //   window.close();
       // }).bind(this))
@@ -27,4 +46,5 @@ export class AppComponent {
         this.voiceService.cancelVoice();
       });
   }
+
 }

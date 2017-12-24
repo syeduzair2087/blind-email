@@ -6,6 +6,7 @@ import { AuthService } from 'app/services/auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { EmailService } from 'app/services/email.service';
 import { EntertainmentService } from 'app/services/entertainment.service';
+declare var $: any;
 
 @Component({
   selector: 'app-shell',
@@ -15,6 +16,11 @@ import { EntertainmentService } from 'app/services/entertainment.service';
 export class ShellComponent implements OnInit {
   speaking: boolean = true;
   listening: boolean = false;
+  mail = {
+    emailAddress: '',
+    subject: '',
+    body: ''
+  }
 
   emailMenuInput(emails) {
     this.toggleListen(true);
@@ -26,27 +32,49 @@ export class ShellComponent implements OnInit {
 
         console.log(result);
         if (this.voiceService.keywordMatch(result, 'number')) {
+          let mail = '';
+          let emailAddressFull = emails.messages[parseInt(result) - 1].payload.headers.find(header => header.name === "From").value
+          let emailAddress = emailAddressFull.split(' ').slice(0, -1).join(' ');
+          let subject = emails.messages[parseInt(result) - 1].payload.headers.find(header => header.name === "Subject").value;
           // alert('parts' in emails.messages[parseInt(result) - 1].payload);
           if ('parts' in emails.messages[parseInt(result) - 1].payload) {
-            let mail = this.emailService.decodeEmail((emails.messages[parseInt(result) - 1]).payload.parts[0].body.data);
-            this.toggleSpeak(true);
-            this.voiceService.speak(mail, 'female', null, () => {
-              return this.voiceService.speak('I have finished reading your email. Please speak another number, or more, to fetch more emails', 'female', null, () => {
-                this.toggleSpeak(false);
-                this.emailMenuInput(emails)
-              });
-            });
+            mail = this.emailService.decodeEmail((emails.messages[parseInt(result) - 1]).payload.parts[0].body.data);
+            // this.toggleSpeak(true);
+            // this.voiceService.speak(mail, 'female', null, () => {
+            //   return this.voiceService.speak('I have finished reading your email. Please speak another number, or more, to fetch more emails', 'female', null, () => {
+            //     this.toggleSpeak(false);
+            //     this.emailMenuInput(emails)
+            //   });
+            // });
           } else {
-            let mail = this.emailService.decodeEmail((emails.messages[parseInt(result) - 1]).payload.body.data);
+            mail = this.emailService.decodeEmail((emails.messages[parseInt(result) - 1]).payload.body.data);
             alert(mail);
-            this.toggleSpeak(true);
-            this.voiceService.speak(mail, 'female', null, () => {
+            // this.toggleSpeak(true);
+            // this.voiceService.speak(mail, 'female', null, () => {
+            //   return this.voiceService.speak('I have finished reading your email. Please speak another number, or more, to fetch more emails', 'female', null, () => {
+            //     this.toggleSpeak(false);
+            //     this.emailMenuInput(emails)
+            //   });
+            // });
+          }
+          this.mail.emailAddress = emailAddressFull;
+          this.mail.subject = subject;
+          this.mail.body = mail;
+
+          $('#mailModal').modal('show');
+
+          this.toggleSpeak(true);
+          this.voiceService.speak(`
+          The email has been sent from ${emailAddress},
+          the subject of the mail is ${subject},
+          and the message is, ${mail}
+          `, 'female', null, () => {
+              $('#mailModal').modal('hide');
               return this.voiceService.speak('I have finished reading your email. Please speak another number, or more, to fetch more emails', 'female', null, () => {
                 this.toggleSpeak(false);
                 this.emailMenuInput(emails)
               });
             });
-          }
           // console.log('Email', this.emailService.decodeEmail((emails.messages[parseInt(result) - 1]).payload.parts[0].body.data))
         } else if (this.voiceService.keywordMatch(result, 'return')) {
           return (() => {
@@ -82,7 +110,7 @@ export class ShellComponent implements OnInit {
 
   emailMenu(emails) {
     this.toggleSpeak(true);
-    this.voiceService.speak('Your emails have been fetched. Please speak a number between 1 and ' + (emails.messages.length) + '.' + (emails.nextPageToken ? 'Or more, to fetch more emails' : '') , 'female', null, () => {
+    this.voiceService.speak('Your emails have been fetched. Please speak a number between 1 and ' + (emails.messages.length) + '.' + (emails.nextPageToken ? 'Or more, to fetch more emails' : ''), 'female', null, () => {
       this.voiceService.speak('Speak return, to return to previous menu', 'female', null, () => {
         this.toggleSpeak(false);
         this.emailMenuInput(emails);
@@ -188,10 +216,17 @@ export class ShellComponent implements OnInit {
 
   songMenu() {
     this.toggleSpeak(true);
-    this.voiceService.speak('Please speak a number between 1 to 5, to fetch and play a song. Or return, to return to the previous menu', 'female', null, () => {
-      this.toggleSpeak(false);
-      return this.songInput();
-    })
+    this.voiceService.speak(`
+      Please speak ${
+      this.entertainmentService.fetchSongsList()
+        .reduce((acc, song, index, songs) => {
+          return acc + `${index === songs.length - 1 ? ', and ' : ', '} ${index + 1} to play ${song}`
+        }, '')
+      }
+      Or return, to return to the previous menu`, 'female', null, () => {
+        this.toggleSpeak(false);
+        return this.songInput();
+      })
   }
 
   voiceInput() {
@@ -261,17 +296,20 @@ export class ShellComponent implements OnInit {
       this.voiceService.listen()
         .then((emailAddress: string) => {
           this.toggleListen(false);
+          console.log('emailAddress', emailAddress)
           let _emailAddress = emailAddress.replace(/\s+/g, '').toLocaleLowerCase();
           console.log(_emailAddress);
           let emailRegex = /\S+@\S+\.\S+/;
           if (!emailRegex.test(_emailAddress)) {
-            return (() => {
+            // return 
+            setTimeout((() => {
               this.toggleSpeak(true);
               this.voiceService.speak('Sorry, please provide a valid email address.', 'female', null, () => {
                 this.toggleSpeak(false);
                 this.inputEmailAddress();
               })
-            })()
+            }), 0)
+            //()
           } else {
             this.inputEmailSubject(_emailAddress);
           }
@@ -324,10 +362,14 @@ export class ShellComponent implements OnInit {
   }
 
   sendEmail(emailAddress: string, subject: string, body: string) {
+    this.mail.emailAddress = emailAddress;
+    this.mail.subject = subject;
+    this.mail.body = body;
     let mail = {
       emailAddress, subject, body
     };
     console.log(mail);
+    $('#mailModal').modal('show');
     this.toggleSpeak(true);
     this.voiceService.speak('Are you sure you want to send the email?', 'female', null, () => {
       this.toggleSpeak(false);
@@ -337,7 +379,9 @@ export class ShellComponent implements OnInit {
           this.toggleListen(false);
           if (this.voiceService.keywordMatch(result, 'yes')) {
             console.log('yes');
-            return (() => {
+            //return 
+            setTimeout(() => {
+              $('#mailModal').modal('hide');
               this.emailService.sendEmail(emailAddress, subject, body)
                 .subscribe(result => {
                   console.log(result);
@@ -347,8 +391,10 @@ export class ShellComponent implements OnInit {
                     this.playMenu();
                   })
                 })
-            })()
+            }, 0)
+            //()
           } else if (this.voiceService.keywordMatch(result, 'no')) {
+            $('#mailModal').modal('hide');
             this.toggleSpeak(true);
             this.voiceService.speak('Discarding email and returning to previous menu.', 'female', null, () => {
               this.toggleSpeak(false);

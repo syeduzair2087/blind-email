@@ -67,4 +67,14 @@ export class EntertainmentService {
       // .map(response => response.json())
   }
 
+  fetchSongsList() {
+    return [
+      'Man Amadeam',
+      'Man Amadeam',
+      'Man Amadeam',
+      'Man Amadeam',
+      'Man Amadeam'
+    ]
+  }
+
 }
