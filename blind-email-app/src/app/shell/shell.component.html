@@ -21,8 +21,10 @@
     </div>
 </div>
 <div class="home-bg row">
-    <i class="fa fa-fw fa-5x fa-volume-up animated pulse infinite" *ngIf="speaking"></i>
-    <i class="fa fa-fw fa-5x fa-volume-off" *ngIf="!speaking"></i>
-    <i class="fa fa-fw fa-5x fa-microphone animated pulse infinite" *ngIf="listening"></i>
-    <i class="fa fa-fw fa-5x fa-microphone-slash" *ngIf="!listening"></i>
+    <div style="width:100%" class="text-center">
+        <i class="fa fa-fw fa-5x fa-volume-up animated pulse infinite" *ngIf="speaking"></i>
+        <i class="fa fa-fw fa-5x fa-volume-off" *ngIf="!speaking"></i>
+        <i class="fa fa-fw fa-5x fa-microphone animated pulse infinite" *ngIf="listening"></i>
+        <i class="fa fa-fw fa-5x fa-microphone-slash" *ngIf="!listening"></i>
+    </div>
 </div>
