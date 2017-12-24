@@ -6,9 +6,20 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 99999;
+    /* z-index: 99999; */
 }
 
 .home-bg i {
     color: whitesmoke
+}
+
+table {
+    width: 100%;
+    padding: 8px;
+}
+
+table td {
+    padding: 4px;
+    font-size: 1.3em;
+    vertical-align: top;
 }

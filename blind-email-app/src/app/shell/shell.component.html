@@ -1,3 +1,25 @@
+<div id="mailModal" class="modal fade" tabindex="-1" role="dialog" style="z-index:9999">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <table>
+                    <tr>
+                        <td><u>Email Address:</u></td>
+                        <td>{{mail.emailAddress}}</td>
+                    </tr>
+                    <tr>
+                        <td><u>Subject:</u></td>
+                        <td>{{mail.subject}}</td>
+                    </tr>
+                    <tr>
+                        <td><u>Message:</u></td>
+                        <td>{{mail.body}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="home-bg row">
     <i class="fa fa-fw fa-5x fa-volume-up animated pulse infinite" *ngIf="speaking"></i>
     <i class="fa fa-fw fa-5x fa-volume-off" *ngIf="!speaking"></i>
