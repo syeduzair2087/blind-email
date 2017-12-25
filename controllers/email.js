@@ -36,7 +36,7 @@ fs.readFile('client_secret.json', (err, content) => {
 });
 
 
-exports.loginPage = (req, res, isRefresh) => {
+exports.loginPage = (req, res, next) => {
     if (authUrl)
         res.json({ url: authUrl });
     else
