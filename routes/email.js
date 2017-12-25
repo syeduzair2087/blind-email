@@ -15,4 +15,6 @@ router.get('/logout', emailController.logout);
 router.get('/getLableList', emailController.getLableList);
 router.get('/getByLableId', emailController.getLableDetail);
 
+router.get('/verifyToken', emailController.verifyToken);
+
 module.exports = router;

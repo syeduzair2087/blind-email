@@ -2,6 +2,7 @@ var exports = module.exports = {}
 var fs = require('fs');
 var google = require('googleapis');
 var googleAuth = require('google-auth-library');
+var request = require('request');
 
 var SCOPES = [
     'https://mail.google.com/',
@@ -35,7 +36,7 @@ fs.readFile('client_secret.json', (err, content) => {
 });
 
 
-exports.loginPage = (req, res, next) => {
+exports.loginPage = (req, res, isRefresh) => {
     if (authUrl)
         res.json({ url: authUrl });
     else
@@ -58,6 +59,7 @@ exports.getToken = (req, res, next) => {
 
         res.cookie('token', encryptToken(token));
         res.redirect('/home');
+
         // res.json({
         //     message: 'User authorized successfully!'
         // });
@@ -71,7 +73,7 @@ exports.getMessageList = (req, res, next) => {
         userId: 'me',
         labelIds: req.body.labelId || 'INBOX',
         pageToken: req.body.pageToken || '',
-        q: req.body.query || 'in:inbox is:unread -category:(promotions OR social)',
+        q: req.body.query || 'in:inbox -category:(promotions OR social)',
         maxResults: 10,
         auth: auth,
     }, (err, result) => {
@@ -144,7 +146,7 @@ exports.sendMail = (req, res, next) => {
             return res.
                 status(err.code || 520)
                 .json({
-                    message: 'Error while sending mail...',
+                    message: 'Error while sending mail please try later...',
                     err: err
                 });
         }
@@ -209,6 +211,14 @@ exports.getLableDetail = (req, res, next) => {
     });
 }
 
+exports.verifyToken = (req, res, next) => {
+    tokeninfo(dencryptToken(req.cookies.token).access_token)
+        .then(data => res.json(data))
+        .catch(error => res.status(error.status).json(error))
+
+}
+
+
 function getMessageDetail(messageID, auth) {
     return new Promise((resolve, reject) => {
         gmail.users.messages.get({
@@ -248,4 +258,21 @@ function encryptToken(token) {
 
 function dencryptToken(token) {
     return JSON.parse(new Buffer(token, 'base64').toString());
+}
+
+function tokeninfo(access_token) {
+    return new Promise((resolve, reject) => {
+        request('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=' + access_token, (error, response, body) => {
+            if (!error && response.statusCode === 200) {
+                resolve({
+                    data: body,
+                });
+            } else {
+                reject({
+                    error: body,
+                    status: response.statusCode
+                });
+            }
+        });
+    });
 }
