@@ -214,7 +214,10 @@ exports.getLableDetail = (req, res, next) => {
 exports.verifyToken = (req, res, next) => {
     tokeninfo(dencryptToken(req.cookies.token).access_token)
         .then(data => res.json(data))
-        .catch(error => res.status(error.status).json(error))
+        .catch(error => res
+            .status(error.status || 400)
+            // .error(error));
+            .json(error))
 
 }
 

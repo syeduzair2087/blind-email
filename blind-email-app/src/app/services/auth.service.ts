@@ -20,4 +20,22 @@ export class AuthService {
     return this.http.get(this.apiUrl('email/logout'))
       .map(response => response.json())
   }
+
+  verifyToken() {
+    return this.http.get(this.apiUrl('email/verifyToken'))
+      .map(response => response.json())
+  }
 }
+
+// @Injectable()
+// export class RouteResolver implements Resolve<any> {
+//   constructor(private authService: AuthService, private router: Router) { }
+
+//   resolve() {
+//     return this.authService.verifyToken().catch((error) => {
+//       console.log('error', error)
+//       this.router.navigate(['login']);
+//       return Observable.empty();
+//     });
+//   }
+// }

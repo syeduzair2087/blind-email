@@ -254,6 +254,12 @@ export class ShellComponent implements OnInit {
               .subscribe((result: any) => {
                 console.log(result);
                 this.emailMenu(result.data);
+              }, (error: any) => {
+                this.toggleSpeak(true);
+                this.voiceService.speak('Sorry, there was an error fetching your email, please try again.', 'female', null, () => {
+                  this.toggleSpeak(false);
+                  this.playMenu();
+                })
               })
           })
           return;
@@ -414,6 +420,19 @@ export class ShellComponent implements OnInit {
   constructor(private voiceService: VoiceService, private authService: AuthService, private router: Router, private emailService: EmailService, private changeDetector: ChangeDetectorRef, private entertainmentService: EntertainmentService) { }
 
   ngOnInit() {
+    this.authService.verifyToken()
+      .subscribe(
+      () => { },
+      (error) => {
+        console.log('error occur 1')
+        this.authService.logout()
+          .subscribe(() => {
+            this.voiceService.cancelVoice();
+            console.log('error occur')
+            this.router.navigate(['login'])
+          });
+      });
+
     this.playIntro();
   }
 

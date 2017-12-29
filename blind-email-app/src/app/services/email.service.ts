@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import { Buffer } from 'buffer';
+import 'rxjs/add/operator/catch';
+import 'rxjs/add/observable/throw'
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class EmailService {
@@ -15,7 +18,8 @@ export class EmailService {
       pageToken
     } : {} , {
       withCredentials: true
-    }).map(response => response.json());
+    }).map(response => response.json())
+    // .catch(error => Observable.throw(error))
   }
 
   decodeEmail(encodedEmail: string) {
