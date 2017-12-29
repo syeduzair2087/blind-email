@@ -45,16 +45,22 @@ export class EntertainmentService {
         title = 'ManAamadeh';
         break;
       case 2:
-        title = 'ManAamadeh';
+        title = 'we dont talk anymore';
         break;
       case 3:
-        title = 'ManAamadeh';
+        title = "We Don't Run";
         break;
       case 4:
-        title = 'ManAamadeh';
+        title = 'love me like you do';
         break;
       case 5:
-        title = 'ManAamadeh';
+        title = 'Born Again Tomorrow';
+        break;
+      case 6:
+        title = 'animals';
+        break;
+      case 7:
+        title = 'Dil Diyan Gallan';
         break;
     }
 
@@ -64,16 +70,19 @@ export class EntertainmentService {
     return this.apiUrl('entertainment/getSong?songName=' + title);
 
     // return this.http.get(this.apiUrl('entertainment/getSong'), { params })
-      // .map(response => response.json())
+    // .map(response => response.json())
   }
 
   fetchSongsList() {
     return [
       'Man Amadeam',
-      'Man Amadeam',
-      'Man Amadeam',
-      'Man Amadeam',
-      'Man Amadeam'
+      'we dont talk anymore',
+      "We Don't Run",
+      'love me like you do',
+      'Born Again Tomorrow',
+      'animals',
+      'Dil Diyan Gallan'
+
     ]
   }
 
