@@ -37,7 +37,7 @@ ErrorComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_11" /* Component */])({
         selector: 'app-error',
         template: __webpack_require__(343),
-        styles: [__webpack_require__(331)]
+        styles: [__webpack_require__(330)]
     }),
     __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_app_services_voice_service__["a" /* VoiceService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_app_services_voice_service__["a" /* VoiceService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_2__angular_router__["c" /* ActivatedRouteSnapshot */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_router__["c" /* ActivatedRouteSnapshot */]) === "function" && _b || Object])
 ], ErrorComponent);
@@ -54,7 +54,7 @@ var _a, _b;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__services_auth_service__ = __webpack_require__(34);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_app_services_voice_service__ = __webpack_require__(31);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_first__ = __webpack_require__(142);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_first__ = __webpack_require__(141);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_first___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_first__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LoginComponent; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -118,7 +118,7 @@ LoginComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__angular_core__["_11" /* Component */])({
         selector: 'app-login',
         template: __webpack_require__(344),
-        styles: [__webpack_require__(332)]
+        styles: [__webpack_require__(331)]
     }),
     __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_2_app_services_voice_service__["a" /* VoiceService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2_app_services_voice_service__["a" /* VoiceService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_0__services_auth_service__["a" /* AuthService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__services_auth_service__["a" /* AuthService */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_1__angular_core__["q" /* ChangeDetectorRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__angular_core__["q" /* ChangeDetectorRef */]) === "function" && _c || Object])
 ], LoginComponent);
@@ -136,9 +136,9 @@ var _a, _b, _c;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__(51);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_buffer__ = __webpack_require__(52);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_buffer___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_buffer__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_catch__ = __webpack_require__(141);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_catch__ = __webpack_require__(140);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_catch___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_rxjs_add_operator_catch__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_observable_throw__ = __webpack_require__(140);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_observable_throw__ = __webpack_require__(139);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_rxjs_add_observable_throw___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_rxjs_add_observable_throw__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return EmailService; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -173,14 +173,27 @@ var EmailService = (function () {
     EmailService.prototype.decodeEmail = function (encodedEmail) {
         return (new __WEBPACK_IMPORTED_MODULE_2_buffer__["Buffer"](encodedEmail, 'base64')).toString();
     };
-    EmailService.prototype.sendEmail = function (emailAddress, subject, body) {
-        return this.http.post(this.apiUrl('email/send'), {
+    EmailService.prototype.sendEmail = function (emailAddress, subject, body, messageId, threadId) {
+        var _body = {
             receiverEmail: emailAddress,
             mailSubject: subject,
             mailBody: body
-        }, {
+        };
+        if (messageId && threadId) {
+            _body['replyOptions'] = {
+                messageId: messageId, threadId: threadId
+            };
+        }
+        return this.http.post(this.apiUrl('email/send'), _body, {
             withCredentials: true
         }).map(function (response) { return response.json(); });
+        // return this.http.post(this.apiUrl('email/send'), {
+        //   receiverEmail: emailAddress,
+        //   mailSubject: subject,
+        //   mailBody: body
+        // }, {
+        //     withCredentials: true
+        //   }).map(response => response.json());
     };
     return EmailService;
 }());
@@ -302,7 +315,7 @@ var _a;
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ngx_cookie__ = __webpack_require__(135);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ngx_cookie__ = __webpack_require__(338);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_router__ = __webpack_require__(33);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return HomeGuard; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LoginGuard; });
@@ -363,7 +376,7 @@ var _a, _b, _c, _d;
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_rxjs_Rx__ = __webpack_require__(138);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_rxjs_Rx__ = __webpack_require__(137);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_rxjs_Rx___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_rxjs_Rx__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__services_voice_service__ = __webpack_require__(31);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_core__ = __webpack_require__(5);
@@ -372,6 +385,14 @@ var _a, _b, _c, _d;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_app_services_email_service__ = __webpack_require__(118);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_app_services_entertainment_service__ = __webpack_require__(119);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ShellComponent; });
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -404,7 +425,7 @@ var ShellComponent = (function () {
             body: ''
         };
     }
-    ShellComponent.prototype.emailMenuInput = function (emails) {
+    ShellComponent.prototype.emailMenuInput = function (emails, opt, mail) {
         var _this = this;
         this.toggleListen(true);
         this.voiceService.listen()
@@ -414,13 +435,14 @@ var ShellComponent = (function () {
                 result = result.match(/\d+/).join('');
             console.log(result);
             if (_this.voiceService.keywordMatch(result, 'number')) {
-                var mail = '';
-                var emailAddressFull = emails.messages[parseInt(result) - 1].payload.headers.find(function (header) { return header.name === "From"; }).value;
-                var emailAddress = emailAddressFull.split(' ').slice(0, -1).join(' ');
-                var subject = emails.messages[parseInt(result) - 1].payload.headers.find(function (header) { return header.name === "Subject"; }).value;
+                console.log(emails.messages[parseInt(result) - 1]);
+                var mail_1 = '';
+                var emailAddressFull = emails.messages[parseInt(result) - 1].payload.headers.find(function (header) { return header.name.toLowerCase() === "from"; }).value;
+                var emailAddress_1 = emailAddressFull.split(' ').slice(0, -1).join(' ') || emailAddressFull;
+                var subject_1 = emails.messages[parseInt(result) - 1].payload.headers.find(function (header) { return header.name.toLowerCase() === "subject"; }).value;
                 // alert('parts' in emails.messages[parseInt(result) - 1].payload);
                 if ('parts' in emails.messages[parseInt(result) - 1].payload) {
-                    mail = _this.emailService.decodeEmail((emails.messages[parseInt(result) - 1]).payload.parts[0].body.data);
+                    mail_1 = _this.emailService.decodeEmail((emails.messages[parseInt(result) - 1]).payload.parts[0].body.data);
                     // this.toggleSpeak(true);
                     // this.voiceService.speak(mail, 'female', null, () => {
                     //   return this.voiceService.speak('I have finished reading your email. Please speak another number, or more, to fetch more emails', 'female', null, () => {
@@ -430,8 +452,8 @@ var ShellComponent = (function () {
                     // });
                 }
                 else {
-                    mail = _this.emailService.decodeEmail((emails.messages[parseInt(result) - 1]).payload.body.data);
-                    alert(mail);
+                    mail_1 = _this.emailService.decodeEmail((emails.messages[parseInt(result) - 1]).payload.body.data);
+                    // alert(mail);
                     // this.toggleSpeak(true);
                     // this.voiceService.speak(mail, 'female', null, () => {
                     //   return this.voiceService.speak('I have finished reading your email. Please speak another number, or more, to fetch more emails', 'female', null, () => {
@@ -441,15 +463,19 @@ var ShellComponent = (function () {
                     // });
                 }
                 _this.mail.emailAddress = emailAddressFull;
-                _this.mail.subject = subject;
-                _this.mail.body = mail;
+                _this.mail.subject = subject_1;
+                _this.mail.body = mail_1;
                 $('#mailModal').modal('show');
                 _this.toggleSpeak(true);
-                _this.voiceService.speak("\n          The email has been sent from " + emailAddress + ",\n          the subject of the mail is " + subject + ",\n          and the message is, " + mail + "\n          ", 'female', null, function () {
+                _this.voiceService.speak("\n          The email has been sent from " + emailAddress_1 + ",\n          the subject of the mail is " + subject_1 + ",\n          and the message is, " + mail_1 + "\n          ", 'female', null, function () {
                     $('#mailModal').modal('hide');
-                    return _this.voiceService.speak('I have finished reading your email. Please speak another number, or more, to fetch more emails', 'female', null, function () {
+                    return _this.voiceService.speak('I have finished reading your email. Please speak reply, or forward, or speak another number, or more, to fetch more emails', 'female', null, function () {
                         _this.toggleSpeak(false);
-                        _this.emailMenuInput(emails);
+                        _this.emailMenuInput(emails, true, {
+                            emailAddress: emailAddress_1, subject: subject_1, mail: mail_1,
+                            messageId: emails.messages[parseInt(result) - 1].payload.headers.find(function (header) { return header.name.toLowerCase() === "message-id"; }).value,
+                            threadId: emails.messages[parseInt(result) - 1].threadId
+                        });
                     });
                 });
                 // console.log('Email', this.emailService.decodeEmail((emails.messages[parseInt(result) - 1]).payload.parts[0].body.data))
@@ -476,15 +502,56 @@ var ShellComponent = (function () {
                     });
                 })();
             }
+            else if (opt && _this.voiceService.keywordMatch(result, 'reply')) {
+                console.log(mail);
+                _this.replyToMail(mail);
+            }
+            else if (opt && _this.voiceService.keywordMatch(result, 'forward')) {
+                _this.forwardMail(mail);
+            }
             else {
                 _this.toggleSpeak(true);
                 _this.voiceService.speak('Sorry, i was not able to get that, please try again!', 'female', null, function () {
                     return (function () {
                         _this.toggleSpeak(false);
-                        _this.emailMenuInput(emails);
+                        if (opt && mail)
+                            _this.emailMenuInput(emails, opt, mail);
+                        else
+                            _this.emailMenuInput(emails);
                     })();
                 });
             }
+        });
+    };
+    ShellComponent.prototype.forwardMail = function (mail) {
+        var _this = this;
+        this.toggleSpeak(true);
+        this.voiceService.speak('Please speak the email address of the recipient.', 'female', null, function () {
+            _this.toggleSpeak(false);
+            _this.toggleListen(true);
+            _this.voiceService.listen()
+                .then(function (emailAddress) {
+                _this.toggleListen(false);
+                console.log('emailAddress', emailAddress);
+                var __emailAddress = emailAddress.split('dot').join('.');
+                var _emailAddress = __emailAddress.replace(/\s+/g, '').toLocaleLowerCase();
+                console.log(_emailAddress);
+                var emailRegex = /\S+@\S+\.\S+/;
+                if (!emailRegex.test(_emailAddress)) {
+                    // return 
+                    setTimeout((function () {
+                        _this.toggleSpeak(true);
+                        _this.voiceService.speak('Sorry, please provide a valid email address.', 'female', null, function () {
+                            _this.toggleSpeak(false);
+                            _this.forwardMail(mail);
+                        });
+                    }), 0);
+                    //()
+                }
+                else {
+                    _this.sendEmail(_emailAddress, mail.subject, mail.mail);
+                }
+            });
         });
     };
     ShellComponent.prototype.emailMenu = function (emails) {
@@ -685,7 +752,8 @@ var ShellComponent = (function () {
                 .then(function (emailAddress) {
                 _this.toggleListen(false);
                 console.log('emailAddress', emailAddress);
-                var _emailAddress = emailAddress.replace(/\s+/g, '').toLocaleLowerCase();
+                var __emailAddress = emailAddress.split('dot').join('.');
+                var _emailAddress = __emailAddress.replace(/\s+/g, '').toLocaleLowerCase();
                 console.log(_emailAddress);
                 var emailRegex = /\S+@\S+\.\S+/;
                 if (!emailRegex.test(_emailAddress)) {
@@ -724,6 +792,78 @@ var ShellComponent = (function () {
                 }
                 else {
                     _this.inputEmailBody(emailAddress, subject);
+                }
+            });
+        });
+    };
+    ShellComponent.prototype.replyToMail = function (mail) {
+        var _this = this;
+        this.toggleSpeak(true);
+        this.voiceService.speak('Please speak the message.', 'female', null, function () {
+            _this.toggleSpeak(false);
+            _this.voiceService.listen(true)
+                .then(function (message) {
+                console.log(message);
+                if (message.trim() === '') {
+                    return (function () {
+                        _this.toggleSpeak(true);
+                        _this.voiceService.speak('Sorry, please provide an email body.', 'female', null, function () {
+                            _this.toggleSpeak(false);
+                            _this.replyToMail(mail);
+                        });
+                    })();
+                }
+                else {
+                    _this.sendReply(__assign({}, mail, { body: message }));
+                }
+            });
+        });
+    };
+    ShellComponent.prototype.sendReply = function (mail) {
+        var _this = this;
+        this.mail.emailAddress = mail.emailAddress;
+        this.mail.subject = mail.subject;
+        this.mail.body = mail.body;
+        console.log(mail);
+        $('#mailModal').modal('show');
+        this.toggleSpeak(true);
+        this.voiceService.speak('Are you sure you want to send the email?', 'female', null, function () {
+            _this.toggleSpeak(false);
+            _this.toggleListen(true);
+            _this.voiceService.listen()
+                .then(function (result) {
+                _this.toggleListen(false);
+                if (_this.voiceService.keywordMatch(result, 'yes')) {
+                    console.log('yes');
+                    //return 
+                    setTimeout(function () {
+                        $('#mailModal').modal('hide');
+                        _this.emailService.sendEmail(mail.emailAddress, mail.subject, mail.body, mail.messageId, mail.threadId)
+                            .subscribe(function (result) {
+                            console.log(result);
+                            _this.toggleSpeak(true);
+                            _this.voiceService.speak('Your email has been sent successfully!', 'female', null, function () {
+                                _this.toggleSpeak(false);
+                                _this.playMenu();
+                            });
+                        });
+                    }, 0);
+                    //()
+                }
+                else if (_this.voiceService.keywordMatch(result, 'no')) {
+                    $('#mailModal').modal('hide');
+                    _this.toggleSpeak(true);
+                    _this.voiceService.speak('Discarding email and returning to previous menu.', 'female', null, function () {
+                        _this.toggleSpeak(false);
+                        _this.playMenu();
+                    });
+                }
+                else {
+                    return (function () {
+                        _this.voiceService.speak('Sorry i was not able to get that, please try again!', 'female', null, function () {
+                            _this.sendReply(mail);
+                        });
+                    })();
                 }
             });
         });
@@ -833,7 +973,7 @@ ShellComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__angular_core__["_11" /* Component */])({
         selector: 'app-shell',
         template: __webpack_require__(346),
-        styles: [__webpack_require__(334)]
+        styles: [__webpack_require__(333)]
     }),
     __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1__services_voice_service__["a" /* VoiceService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1__services_voice_service__["a" /* VoiceService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_3_app_services_auth_service__["a" /* AuthService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3_app_services_auth_service__["a" /* AuthService */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_4__angular_router__["a" /* Router */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4__angular_router__["a" /* Router */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_5_app_services_email_service__["a" /* EmailService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_5_app_services_email_service__["a" /* EmailService */]) === "function" && _d || Object, typeof (_e = typeof __WEBPACK_IMPORTED_MODULE_2__angular_core__["q" /* ChangeDetectorRef */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__angular_core__["q" /* ChangeDetectorRef */]) === "function" && _e || Object, typeof (_f = typeof __WEBPACK_IMPORTED_MODULE_6_app_services_entertainment_service__["a" /* EntertainmentService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_6_app_services_entertainment_service__["a" /* EntertainmentService */]) === "function" && _f || Object])
 ], ShellComponent);
@@ -843,7 +983,7 @@ var _a, _b, _c, _d, _e, _f;
 
 /***/ }),
 
-/***/ 254:
+/***/ 253:
 /***/ (function(module, exports) {
 
 function webpackEmptyContext(req) {
@@ -852,20 +992,20 @@ function webpackEmptyContext(req) {
 webpackEmptyContext.keys = function() { return []; };
 webpackEmptyContext.resolve = webpackEmptyContext;
 module.exports = webpackEmptyContext;
-webpackEmptyContext.id = 254;
+webpackEmptyContext.id = 253;
 
 
 /***/ }),
 
-/***/ 255:
+/***/ 254:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_platform_browser_dynamic__ = __webpack_require__(265);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__app_app_module__ = __webpack_require__(268);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__environments_environment__ = __webpack_require__(273);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_platform_browser_dynamic__ = __webpack_require__(264);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__app_app_module__ = __webpack_require__(267);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__environments_environment__ = __webpack_require__(272);
 
 
 
@@ -878,7 +1018,7 @@ __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__angular_platform_browser_dyna
 
 /***/ }),
 
-/***/ 266:
+/***/ 265:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -923,12 +1063,12 @@ AppRoutingModule = __decorate([
 
 /***/ }),
 
-/***/ 267:
+/***/ 266:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_app_services_voice_service__ = __webpack_require__(31);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_Rx__ = __webpack_require__(138);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_Rx__ = __webpack_require__(137);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_rxjs_Rx___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_rxjs_Rx__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_core__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_router__ = __webpack_require__(33);
@@ -990,7 +1130,7 @@ AppComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__angular_core__["_11" /* Component */])({
         selector: 'app-root',
         template: __webpack_require__(342),
-        styles: [__webpack_require__(330)]
+        styles: [__webpack_require__(329)]
     }),
     __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_0_app_services_voice_service__["a" /* VoiceService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0_app_services_voice_service__["a" /* VoiceService */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_3__angular_router__["a" /* Router */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__angular_router__["a" /* Router */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_4_app_services_auth_service__["a" /* AuthService */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_4_app_services_auth_service__["a" /* AuthService */]) === "function" && _c || Object])
 ], AppComponent);
@@ -1000,20 +1140,20 @@ var _a, _b, _c;
 
 /***/ }),
 
-/***/ 268:
+/***/ 267:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__app_routing_module__ = __webpack_require__(266);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__app_routing_module__ = __webpack_require__(265);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_platform_browser__ = __webpack_require__(32);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_core__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_forms__ = __webpack_require__(264);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_forms__ = __webpack_require__(263);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__angular_http__ = __webpack_require__(51);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__app_component__ = __webpack_require__(267);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_app_login_login_module__ = __webpack_require__(269);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_app_shell_shell_module__ = __webpack_require__(272);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__app_component__ = __webpack_require__(266);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_app_login_login_module__ = __webpack_require__(268);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_app_shell_shell_module__ = __webpack_require__(271);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_app_services_guard_service__ = __webpack_require__(120);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_ngx_cookie__ = __webpack_require__(135);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_ngx_cookie__ = __webpack_require__(338);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__error_error_component__ = __webpack_require__(116);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AppModule; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -1062,7 +1202,7 @@ AppModule = __decorate([
 
 /***/ }),
 
-/***/ 269:
+/***/ 268:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1070,7 +1210,7 @@ AppModule = __decorate([
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__angular_common__ = __webpack_require__(25);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__login_component__ = __webpack_require__(117);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_app_shared_shared_module__ = __webpack_require__(271);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_app_shared_shared_module__ = __webpack_require__(270);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_app_services_auth_service__ = __webpack_require__(34);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return LoginModule; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -1108,7 +1248,7 @@ LoginModule = __decorate([
 
 /***/ }),
 
-/***/ 270:
+/***/ 269:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1135,7 +1275,7 @@ LoadingComponent = __decorate([
     __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__angular_core__["_11" /* Component */])({
         selector: 'app-loading',
         template: __webpack_require__(345),
-        styles: [__webpack_require__(333)]
+        styles: [__webpack_require__(332)]
     }),
     __metadata("design:paramtypes", [])
 ], LoadingComponent);
@@ -1144,13 +1284,13 @@ LoadingComponent = __decorate([
 
 /***/ }),
 
-/***/ 271:
+/***/ 270:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_common__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__loading_loading_component__ = __webpack_require__(270);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__loading_loading_component__ = __webpack_require__(269);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SharedModule; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
@@ -1182,7 +1322,7 @@ SharedModule = __decorate([
 
 /***/ }),
 
-/***/ 272:
+/***/ 271:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1231,7 +1371,7 @@ ShellModule = __decorate([
 
 /***/ }),
 
-/***/ 273:
+/***/ 272:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1300,6 +1440,12 @@ var VoiceService = (function () {
             ],
             song: [
                 'song', 'play song', 'sing', 'sing a song', 'play', 'music', 'play music'
+            ],
+            reply: [
+                'reply', 'send reply'
+            ],
+            forward: [
+                'forward', 'forward mail'
             ]
         };
     }
@@ -1385,7 +1531,7 @@ VoiceService = __decorate([
 
 /***/ }),
 
-/***/ 330:
+/***/ 329:
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(17)(false);
@@ -1403,7 +1549,7 @@ module.exports = module.exports.toString();
 
 /***/ }),
 
-/***/ 331:
+/***/ 330:
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(17)(false);
@@ -1421,7 +1567,7 @@ module.exports = module.exports.toString();
 
 /***/ }),
 
-/***/ 332:
+/***/ 331:
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(17)(false);
@@ -1439,7 +1585,7 @@ module.exports = module.exports.toString();
 
 /***/ }),
 
-/***/ 333:
+/***/ 332:
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(17)(false);
@@ -1457,7 +1603,7 @@ module.exports = module.exports.toString();
 
 /***/ }),
 
-/***/ 334:
+/***/ 333:
 /***/ (function(module, exports, __webpack_require__) {
 
 exports = module.exports = __webpack_require__(17)(false);
@@ -1481,7 +1627,7 @@ module.exports = module.exports.toString();
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_http__ = __webpack_require__(51);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__ = __webpack_require__(143);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__ = __webpack_require__(142);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_rxjs_add_operator_map__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return AuthService; });
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -1576,7 +1722,7 @@ module.exports = "<div id=\"mailModal\" class=\"modal fade\" tabindex=\"-1\" rol
 /***/ 629:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(255);
+module.exports = __webpack_require__(254);
 
 
 /***/ })

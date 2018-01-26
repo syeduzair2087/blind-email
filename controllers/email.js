@@ -135,13 +135,33 @@ exports.sendMail = (req, res, next) => {
 
     let auth = oauth2Client;
     auth.credentials = dencryptToken(req.cookies.token);
-    gmail.users.messages.send({
+
+    let mailObj = {
         userId: 'me',
         auth: auth,
-        resource: {
-            raw: makeEmailBody(req.body.receiverEmail, req.body.senderEmail, req.body.mailSubject, req.body.mailBody)
-        }
-    }, (err, response) => {
+        resource: {}
+    }
+
+    if(req.body.replyOptions) {
+        mailObj.resource.threadId = req.body.replyOptions.threadId;
+        mailObj.resource.raw = makeEmailBody(req.body.receiverEmail, 
+            req.body.senderEmail, 
+            req.body.mailSubject, 
+            req.body.mailBody, 
+            req.body.replyOptions);
+    } else {
+        mailObj.resource.raw = makeEmailBody(req.body.receiverEmail, req.body.senderEmail, req.body.mailSubject, req.body.mailBody);
+    }
+
+    // {
+    //     userId: 'me',
+    //     auth: auth,
+    //     resource: {
+    //         threadId: '161224608c05ec94',
+    //         raw: makeEmailBody(req.body.receiverEmail, req.body.senderEmail, req.body.mailSubject, req.body.mailBody)
+    //     }
+    // }
+    gmail.users.messages.send(mailObj, (err, response) => {
         if (err) {
             return res.
                 status(err.code || 520)
@@ -242,15 +262,37 @@ function getMessageDetail(messageID, auth) {
     });
 }
 
-function makeEmailBody(receiverEmail, senderEmail, mailSubject, mailBody) {
+function makeEmailBody(receiverEmail, senderEmail, mailSubject, mailBody, replyOptions = null) {
     let mailString = ["Content-Type: text/plain; charset=\"UTF-8\"\n",
         "MIME-Version: 1.0\n",
         "Content-Transfer-Encoding: 7bit\n",
         "to: ", receiverEmail, "\n",
         "from: ", senderEmail, "\n",
-        "subject: ", mailSubject, "\n\n",
-        mailBody
-    ].join('');
+        "subject: ", mailSubject, "\n"
+    ]
+
+    if (replyOptions)
+        mailString = mailString.concat([
+            "In-Reply-To: ", replyOptions.messageId, "\n",
+            "References: ", replyOptions.messageId, "\n"
+        ])
+
+    mailString = mailString.concat([
+        "\n", mailBody
+    ])
+    // let mailString = `Content-Type: text/plain; charset=UTF-8
+    // MIME-Version: 1.0
+    // Content-Transfer-Encoding: 7bit
+    // to: ${receiverEmail}
+    // from: ${senderEmail}
+    // subject: ${mailSubject}
+
+    // ${mailBody}
+    // `
+    mailString = mailString.join('');
+
+    console.log(mailString)
+    
 
     return new Buffer(mailString).toString("base64").replace(/\+/g, '-').replace(/\//g, '_');
 }

@@ -16,9 +16,9 @@ export class EmailService {
   fetchEmail(pageToken?: string) {
     return this.http.post(this.apiUrl('email/get'), pageToken ? {
       pageToken
-    } : {} , {
-      withCredentials: true
-    }).map(response => response.json())
+    } : {}, {
+        withCredentials: true
+      }).map(response => response.json())
     // .catch(error => Observable.throw(error))
   }
 
@@ -26,13 +26,29 @@ export class EmailService {
     return (new Buffer(encodedEmail, 'base64')).toString();
   }
 
-  sendEmail(emailAddress: string, subject: string, body: string) {
-    return this.http.post(this.apiUrl('email/send'), {
+  sendEmail(emailAddress: string, subject: string, body: string, messageId?: string, threadId?: string) {
+    let _body = {
       receiverEmail: emailAddress,
       mailSubject: subject,
       mailBody: body
-    } , {
-      withCredentials: true
-    }).map(response => response.json());
+    };
+
+    if(messageId && threadId) {
+      _body['replyOptions'] = {
+        messageId, threadId
+      }
+    }
+
+    return this.http.post(this.apiUrl('email/send'), _body, {
+        withCredentials: true
+      }).map(response => response.json());
+
+    // return this.http.post(this.apiUrl('email/send'), {
+    //   receiverEmail: emailAddress,
+    //   mailSubject: subject,
+    //   mailBody: body
+    // }, {
+    //     withCredentials: true
+    //   }).map(response => response.json());
   }
 }

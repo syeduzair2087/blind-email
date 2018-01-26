@@ -41,6 +41,12 @@ export class VoiceService {
     ],
     song: [
       'song', 'play song', 'sing', 'sing a song', 'play', 'music', 'play music'
+    ],
+    reply: [
+      'reply', 'send reply'
+    ],
+    forward: [
+      'forward', 'forward mail'
     ]
   }
 
